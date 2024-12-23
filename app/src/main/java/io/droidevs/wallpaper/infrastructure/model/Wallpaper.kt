@@ -11,7 +11,9 @@ import androidx.annotation.NonNull
 import androidx.documentfile.provider.DocumentFile
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import io.droidevs.wallpaper.infrastructure.util.SortType
 import io.droidevs.wallpaper.infrastructure.util.WallpaperSort
 import io.droidevs.wallpaper.util.BitmapUtils.generatePalette
 import io.droidevs.wallpaper.util.FileUtils.toFile
@@ -55,8 +57,6 @@ class Wallpaper() : Comparable<Wallpaper>, Serializable, Parcelable {
     @ColumnInfo(name = "folder_id")
     var folderID: Int = 0
 
-    @ColumnInfo
-    var isSelected: Boolean = false
 
     constructor(parcel: Parcel) : this() {
         name = parcel.readString()
@@ -69,7 +69,6 @@ class Wallpaper() : Comparable<Wallpaper>, Serializable, Parcelable {
         dateModified = parcel.readLong()
         size = parcel.readLong()
         folderID = parcel.readInt()
-        isSelected = parcel.readByte() != 0.toByte()
     }
 
     fun getFile(): File {
@@ -81,14 +80,14 @@ class Wallpaper() : Comparable<Wallpaper>, Serializable, Parcelable {
     }
 
     override fun compareTo(other: Wallpaper): Int {
-        val wallpaperSort = WallpaperSort.NAME
+        val sortType = SortType.NAME
         //TODO(fetch the wallpapersort from settings)
-        return when (wallpaperSort) {
-            WallpaperSort.NAME -> name!!.compareTo(other.name!!)
-            WallpaperSort.DATE -> dateModified.compareTo(other.dateModified)
-            WallpaperSort.SIZE -> size.compareTo(other.size)
-            WallpaperSort.WIDTH -> width!!.compareTo(other.width!!)
-            WallpaperSort.HEIGHT -> height!!.compareTo(other.height!!)
+        return when (sortType) {
+            SortType.NAME -> name!!.compareTo(other.name!!)
+            SortType.DATE -> dateModified.compareTo(other.dateModified)
+            SortType.SIZE -> size.compareTo(other.size)
+            SortType.WIDTH -> width!!.compareTo(other.width!!)
+            SortType.HEIGHT -> height!!.compareTo(other.height!!)
             else -> 0
         }
     }
@@ -107,7 +106,6 @@ class Wallpaper() : Comparable<Wallpaper>, Serializable, Parcelable {
         result = 31 * result + (height ?: 0)
         result = 31 * result + dateModified.hashCode()
         result = 31 * result + size.hashCode()
-        result = 31 * result + isSelected.hashCode()
         result = 31 * result + id.hashCode()
         result = 31 * result + prominentColor
         result = 31 * result + folderID
@@ -129,7 +127,6 @@ class Wallpaper() : Comparable<Wallpaper>, Serializable, Parcelable {
         parcel.writeLong(dateModified)
         parcel.writeLong(size)
         parcel.writeInt(folderID)
-        parcel.writeByte(if (isSelected) 1 else 0)
     }
 
     override fun describeContents(): Int {

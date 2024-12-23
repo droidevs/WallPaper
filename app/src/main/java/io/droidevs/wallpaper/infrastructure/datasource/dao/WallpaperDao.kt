@@ -1,6 +1,7 @@
 package io.droidevs.wallpaper.infrastructure.datasource.dao
 
 import android.util.Log
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -16,6 +17,30 @@ import kotlin.system.measureTimeMillis
 
 @Dao
 interface WallpaperDao {
+
+    @Query("SELECT * FROM wallpapers ORDER BY dateModified DESC")
+    fun getWallpapersPagingSource(): PagingSource<Int, Wallpaper>
+
+
+    @Query("SELECT * FROM wallpapers ORDER BY name DESC")
+    fun getWallpapersPagingSourceByNameDEC(): PagingSource<Int, Wallpaper>
+
+    @Query("SELECT * FROM wallpapers ORDER BY name ASC")
+    fun getWallpapersPagingSourceByNameASC(): PagingSource<Int, Wallpaper>
+
+    @Query("SELECT * FROM wallpapers ORDER BY size DESC")
+    fun getWallpapersPagingSourceBySizeDESC(): PagingSource<Int, Wallpaper>
+
+    @Query("SELECT * FROM wallpapers ORDER BY size ASC")
+    fun getWallpapersPagingSourceBySizeASC(): PagingSource<Int, Wallpaper>
+
+    @Query("SELECT * FROM wallpapers ORDER BY width DESC")
+    fun getWallpapersPagingSourceByWidthDESC(): PagingSource<Int, Wallpaper>
+
+    @Query("SELECT * FROM wallpapers ORDER BY width ASC")
+    fun getWallpapersPagingSourceByWidthASC(): PagingSource<Int, Wallpaper>
+
+
     @Query("SELECT * FROM wallpapers ORDER BY dateModified DESC")
     fun getWallpapers(): List<Wallpaper>
 
