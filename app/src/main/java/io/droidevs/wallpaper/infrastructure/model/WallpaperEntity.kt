@@ -11,10 +11,8 @@ import androidx.annotation.NonNull
 import androidx.documentfile.provider.DocumentFile
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import io.droidevs.wallpaper.infrastructure.util.SortType
-import io.droidevs.wallpaper.infrastructure.util.WallpaperSort
 import io.droidevs.wallpaper.util.BitmapUtils.generatePalette
 import io.droidevs.wallpaper.util.FileUtils.toFile
 import io.droidevs.wallpaper.util.FileUtils.toUri
@@ -22,7 +20,7 @@ import java.io.File
 import java.io.Serializable
 
 @Entity(tableName = "wallpapers")
-class Wallpaper() : Comparable<Wallpaper>, Serializable, Parcelable {
+class WallpaperEntity() : Comparable<WallpaperEntity>, Serializable, Parcelable {
 
     @ColumnInfo(name = "name")
     var name: String? = null
@@ -71,15 +69,11 @@ class Wallpaper() : Comparable<Wallpaper>, Serializable, Parcelable {
         folderID = parcel.readInt()
     }
 
-    fun getFile(): File {
-        return filePath.toFile()
-    }
-
     override fun toString(): String {
         return "Wallpaper(name=$name, uri=$uri, width=$width, height=$height)"
     }
 
-    override fun compareTo(other: Wallpaper): Int {
+    override fun compareTo(other: WallpaperEntity): Int {
         val sortType = SortType.NAME
         //TODO(fetch the wallpapersort from settings)
         return when (sortType) {
@@ -94,7 +88,7 @@ class Wallpaper() : Comparable<Wallpaper>, Serializable, Parcelable {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is Wallpaper) return false
+        if (other !is WallpaperEntity) return false
 
         return id == other.id
     }
@@ -133,74 +127,15 @@ class Wallpaper() : Comparable<Wallpaper>, Serializable, Parcelable {
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<Wallpaper> {
-        override fun createFromParcel(parcel: Parcel): Wallpaper {
-            return Wallpaper(parcel)
+    companion object CREATOR : Parcelable.Creator<WallpaperEntity> {
+        override fun createFromParcel(parcel: Parcel): WallpaperEntity {
+            return WallpaperEntity(parcel)
         }
 
-        override fun newArray(size: Int): Array<Wallpaper?> {
+        override fun newArray(size: Int): Array<WallpaperEntity?> {
             return arrayOfNulls(size)
         }
 
         private const val TAG = "Wallpaper"
-
-        /**
-         * Use this method to create a Wallpaper object from a URI only for files
-         * that doesn't exist in the database and are not required to be associated
-         * with a specific folder.
-         *
-         * [folderID] will return null
-         *
-         * @param uri The URI of the file
-         */
-        fun createFromUri(uri: String, context: Context): Wallpaper {
-            val wallpaper = Wallpaper()
-            wallpaper.uri = uri
-            val documentFile = DocumentFile.fromSingleUri(context, Uri.parse(uri))
-            wallpaper.name = documentFile?.name
-            wallpaper.size = documentFile?.length() ?: 0
-            wallpaper.dateModified = documentFile?.lastModified() ?: 0
-
-            context.contentResolver.openInputStream(uri.toUri())?.use { inputStream ->
-                val options = BitmapFactory.Options()
-                options.inJustDecodeBounds = false
-                val bitmap = BitmapFactory.decodeStream(inputStream, null, options)
-                wallpaper.width = options.outWidth
-                wallpaper.height = options.outHeight
-                wallpaper.prominentColor = bitmap?.generatePalette()?.vibrantSwatch?.rgb ?: 0
-                wallpaper.id = uri.hashCode().toString()
-            }
-
-            return wallpaper
-        }
-
-        fun createWallpaperFromFile(file: DocumentFile, context: Context): Wallpaper {
-            return createFromUri(file.uri.toString(), context)
-        }
-
-        /**
-         * Use this method to create a Wallpaper object from a File.
-         *
-         * @param file The File object
-         */
-        fun createFromFile(file: File): Wallpaper {
-            val wallpaper = Wallpaper()
-            wallpaper.filePath = file.absolutePath
-            wallpaper.name = file.name
-            wallpaper.size = file.length()
-            wallpaper.dateModified = file.lastModified()
-
-            file.inputStream().use { inputStream ->
-                val options = BitmapFactory.Options()
-                options.inJustDecodeBounds = false
-                val bitmap = BitmapFactory.decodeStream(inputStream, null, options)
-                wallpaper.width = options.outWidth
-                wallpaper.height = options.outHeight
-                wallpaper.prominentColor = bitmap?.generatePalette()?.vibrantSwatch?.rgb ?: 0
-                wallpaper.id = file.hashCode().toString()
-            }
-
-            return wallpaper
-        }
     }
 }

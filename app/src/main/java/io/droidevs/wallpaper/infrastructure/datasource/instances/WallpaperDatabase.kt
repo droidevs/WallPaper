@@ -5,10 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import io.droidevs.wallpaper.infrastructure.datasource.dao.WallpaperDao
-import io.droidevs.wallpaper.infrastructure.model.Wallpaper
+import io.droidevs.wallpaper.infrastructure.model.WallpaperEntity
 import io.droidevs.wallpaper.util.ConditionUtils.invert
 
-@Database(entities = [Wallpaper::class], version = 1)
+@Database(entities = [WallpaperEntity::class], version = 1)
 abstract class WallpaperDatabase : RoomDatabase() {
     abstract fun wallpaperDao(): WallpaperDao
 

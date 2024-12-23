@@ -10,7 +10,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import io.droidevs.wallpaper.infrastructure.datasource.instances.WallpaperDatabase
-import io.droidevs.wallpaper.infrastructure.model.Wallpaper
+import io.droidevs.wallpaper.infrastructure.model.WallpaperEntity
 import kotlinx.coroutines.flow.Flow
 import java.io.File
 import kotlin.system.measureTimeMillis
@@ -19,43 +19,43 @@ import kotlin.system.measureTimeMillis
 interface WallpaperDao {
 
     @Query("SELECT * FROM wallpapers ORDER BY dateModified DESC")
-    fun getWallpapersPagingSource(): PagingSource<Int, Wallpaper>
+    fun getWallpapersPagingSource(): PagingSource<Int, WallpaperEntity>
 
 
     @Query("SELECT * FROM wallpapers ORDER BY name DESC")
-    fun getWallpapersPagingSourceByNameDEC(): PagingSource<Int, Wallpaper>
+    fun getWallpapersPagingSourceByNameDEC(): PagingSource<Int, WallpaperEntity>
 
     @Query("SELECT * FROM wallpapers ORDER BY name ASC")
-    fun getWallpapersPagingSourceByNameASC(): PagingSource<Int, Wallpaper>
+    fun getWallpapersPagingSourceByNameASC(): PagingSource<Int, WallpaperEntity>
 
     @Query("SELECT * FROM wallpapers ORDER BY size DESC")
-    fun getWallpapersPagingSourceBySizeDESC(): PagingSource<Int, Wallpaper>
+    fun getWallpapersPagingSourceBySizeDESC(): PagingSource<Int, WallpaperEntity>
 
     @Query("SELECT * FROM wallpapers ORDER BY size ASC")
-    fun getWallpapersPagingSourceBySizeASC(): PagingSource<Int, Wallpaper>
+    fun getWallpapersPagingSourceBySizeASC(): PagingSource<Int, WallpaperEntity>
 
     @Query("SELECT * FROM wallpapers ORDER BY width DESC")
-    fun getWallpapersPagingSourceByWidthDESC(): PagingSource<Int, Wallpaper>
+    fun getWallpapersPagingSourceByWidthDESC(): PagingSource<Int, WallpaperEntity>
 
     @Query("SELECT * FROM wallpapers ORDER BY width ASC")
-    fun getWallpapersPagingSourceByWidthASC(): PagingSource<Int, Wallpaper>
+    fun getWallpapersPagingSourceByWidthASC(): PagingSource<Int, WallpaperEntity>
 
 
     @Query("SELECT * FROM wallpapers ORDER BY dateModified DESC")
-    fun getWallpapers(): List<Wallpaper>
+    fun getWallpapers(): List<WallpaperEntity>
 
     @Query("SELECT * FROM wallpapers ORDER BY dateModified DESC")
-    fun getWallpapersFlow(): Flow<List<Wallpaper>>
+    fun getWallpapersFlow(): Flow<List<WallpaperEntity>>
 
-    fun getWallpapersByWidthAndHeight(width: Int, height: Int): List<Wallpaper> {
+    fun getWallpapersByWidthAndHeight(width: Int, height: Int): List<WallpaperEntity> {
         return getWallpapers().filter { it.width == width && it.height == height }
     }
 
-    fun getInadequateWallpapers(width: Int, height: Int): List<Wallpaper> {
+    fun getInadequateWallpapers(width: Int, height: Int): List<WallpaperEntity> {
         return getWallpapers().filter { it.width!! < width || it.height!! < height }
     }
 
-    fun getExcessivelyLargeWallpapers(width: Int, height: Int): List<Wallpaper> {
+    fun getExcessivelyLargeWallpapers(width: Int, height: Int): List<WallpaperEntity> {
         return getWallpapers().filter { it.width!! > width || it.height!! > height }
     }
 
@@ -63,20 +63,20 @@ interface WallpaperDao {
      * Get wallpaper by MD5
      */
     @Query("SELECT * FROM wallpapers WHERE id = :id")
-    fun getWallpaperByID(id: String): Wallpaper?
+    fun getWallpaperByID(id: String): WallpaperEntity?
 
     /**
      * Get wallpapers by the matching all the MD% in the HashSet
      */
     @Query("SELECT * FROM wallpapers WHERE id IN (:ids)")
-    fun getWallpapersByMD5s(ids: Set<String>): List<Wallpaper>
+    fun getWallpapersByMD5s(ids: Set<String>): List<WallpaperEntity>
 
     /**
-     * Get wallpapers by the matching the [Wallpaper.folderID]
+     * Get wallpapers by the matching the [WallpaperEntity.folderID]
      * with the specified [hashcode]
      */
     @Query("SELECT * FROM wallpapers WHERE folder_id = :hashcode")
-    fun getWallpapersByPathHashcode(hashcode: Int): List<Wallpaper>
+    fun getWallpapersByPathHashcode(hashcode: Int): List<WallpaperEntity>
 
     /**
      * Get count of wallpapers of the specified [uriHashcode]
@@ -89,12 +89,12 @@ interface WallpaperDao {
      * specified extension
      *
      * Extensions: .jpg, .jpeg, .webp, .png
-     * From: [Wallpaper.name]
+     * From: [WallpaperEntity.name]
      */
     @Query("DELETE FROM wallpapers WHERE name NOT LIKE '%.jpg' AND name NOT LIKE '%.jpeg' AND name NOT LIKE '%.webp' AND name NOT LIKE '%.png'")
     fun sanitizeEntries()
 
-    fun getRandomWallpaper(): Wallpaper {
+    fun getRandomWallpaper(): WallpaperEntity {
         return getWallpapers().random()
     }
 
@@ -102,7 +102,7 @@ interface WallpaperDao {
      * Delete a wallpaper from the database
      */
     @Delete
-    fun delete(wallpaper: Wallpaper)
+    fun delete(wallpaper: WallpaperEntity)
 
     /**
      * Delete wallpaper by URI
@@ -120,16 +120,16 @@ interface WallpaperDao {
      * Update a wallpaper from the database
      */
     @Update
-    fun update(wallpaper: Wallpaper)
+    fun update(wallpaper: WallpaperEntity)
 
     /**
      * Insert a wallpaper into the database
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(wallpaper: Wallpaper)
+    fun insert(wallpaper: WallpaperEntity)
 
     @Transaction
-    fun insertWithConflictHandling(wallpaper: Wallpaper) {
+    fun insertWithConflictHandling(wallpaper: WallpaperEntity) {
         val existingWallpaper = getWallpaperByID(wallpaper.id)
         if (existingWallpaper != null) {
             wallpaper.id += "duplicate"
@@ -146,7 +146,7 @@ interface WallpaperDao {
     fun nukeTable()
 
     /**
-     * Delete all wallpapers by the matching the [Wallpaper.folderID]
+     * Delete all wallpapers by the matching the [WallpaperEntity.folderID]
      * with the specified [hashcode]
      */
     @Query("DELETE FROM wallpapers WHERE folder_id = :hashcode")
@@ -160,7 +160,7 @@ interface WallpaperDao {
                 val validHashcodes = allPaths.map { it.hashCode() }.toSet()
 
                 val wallpaperDao = wallpaperDatabase.wallpaperDao()
-                val allWallpapers = wallpaperDao.getWallpapers() ?: emptyList<Wallpaper>()
+                val allWallpapers = wallpaperDao.getWallpapers() ?: emptyList<WallpaperEntity>()
 
                 allWallpapers.forEach { wallpaper ->
                     if (wallpaper.folderID !in validHashcodes || !File(wallpaper.filePath).exists()) {

@@ -1,12 +1,12 @@
 package io.droidevs.wallpaper.infrastructure.util
 
-import io.droidevs.wallpaper.infrastructure.model.Wallpaper
+import io.droidevs.wallpaper.infrastructure.model.WallpaperEntity
 
 data class WallpaperSort(
     val sortType : SortType,
     val sortOrder : SortOrder
 )
-fun ArrayList<Wallpaper>.getSortedList(sort: WallpaperSort) {
+fun ArrayList<WallpaperEntity>.getSortedList(sort: WallpaperSort) {
     //TODO(FETCH the sort data from settings)
     when (sort.sortType) {
         SortType.NAME -> sortByName(sort.sortOrder)
@@ -17,13 +17,13 @@ fun ArrayList<Wallpaper>.getSortedList(sort: WallpaperSort) {
     }
 }
 
-fun List<Wallpaper>.getSortedList(): List<Wallpaper> {
+fun List<WallpaperEntity>.getSortedList(): List<WallpaperEntity> {
     val sortedList = ArrayList(this) // Copy the list
     sortedList.getSortedList()
     return sortedList
 }
 
-private fun ArrayList<Wallpaper>.sortByName(sortOrder: SortOrder) {
+private fun ArrayList<WallpaperEntity>.sortByName(sortOrder: SortOrder) {
     if (isOrderAsc(sortOrder)) {
         sortBy { it.name }
     } else {
@@ -31,7 +31,7 @@ private fun ArrayList<Wallpaper>.sortByName(sortOrder: SortOrder) {
     }
 }
 
-private fun ArrayList<Wallpaper>.sortByDate(sortOrder: SortOrder) {
+private fun ArrayList<WallpaperEntity>.sortByDate(sortOrder: SortOrder) {
     if (isOrderAsc(sortOrder)) {
         sortBy { it.dateModified }
     } else {
@@ -39,7 +39,7 @@ private fun ArrayList<Wallpaper>.sortByDate(sortOrder: SortOrder) {
     }
 }
 
-private fun ArrayList<Wallpaper>.sortBySize(sortOrder: SortOrder) {
+private fun ArrayList<WallpaperEntity>.sortBySize(sortOrder: SortOrder) {
     if (isOrderAsc(sortOrder)) {
         sortBy { it.size }
     } else {
@@ -47,7 +47,7 @@ private fun ArrayList<Wallpaper>.sortBySize(sortOrder: SortOrder) {
     }
 }
 
-private fun ArrayList<Wallpaper>.sortByWidth(sortOrder: SortOrder) {
+private fun ArrayList<WallpaperEntity>.sortByWidth(sortOrder: SortOrder) {
     if (isOrderAsc(sortOrder)) {
         sortBy { it.width }
     } else {
@@ -55,7 +55,7 @@ private fun ArrayList<Wallpaper>.sortByWidth(sortOrder: SortOrder) {
     }
 }
 
-private fun ArrayList<Wallpaper>.sortByHeight(sortOrder: SortOrder) {
+private fun ArrayList<WallpaperEntity>.sortByHeight(sortOrder: SortOrder) {
     if (isOrderAsc(sortOrder)) {
         sortBy { it.height }
     } else {

@@ -7,7 +7,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import io.droidevs.wallpaper.infrastructure.datasource.dao.WallpaperDao
 import io.droidevs.wallpaper.infrastructure.datasource.instances.WallpaperDatabase
-import io.droidevs.wallpaper.infrastructure.model.Wallpaper
+import io.droidevs.wallpaper.infrastructure.model.WallpaperEntity
 import io.droidevs.wallpaper.infrastructure.util.SortOrder
 import io.droidevs.wallpaper.infrastructure.util.SortType
 import io.droidevs.wallpaper.infrastructure.util.WallpaperSort
@@ -19,19 +19,19 @@ import kotlinx.coroutines.flow.flowOn
 
 class WallpaperRepository(private val wallpaperDao: WallpaperDao) {
 
-    suspend fun getWallpaperById(id: String): Wallpaper? {
+    suspend fun getWallpaperById(id: String): WallpaperEntity? {
         return wallpaperDao.getWallpaperByID(id)
     }
 
-    suspend fun insertWallpaper(wallpaper: Wallpaper) {
+    suspend fun insertWallpaper(wallpaper: WallpaperEntity) {
         wallpaperDao.insert(wallpaper)
     }
 
-    suspend fun updateWallpaper(wallpaper: Wallpaper) {
+    suspend fun updateWallpaper(wallpaper: WallpaperEntity) {
         wallpaperDao.update(wallpaper)
     }
 
-    suspend fun deleteWallpaper(wallpaper: Wallpaper) {
+    suspend fun deleteWallpaper(wallpaper: WallpaperEntity) {
         wallpaperDao.delete(wallpaper)
     }
 
@@ -41,17 +41,11 @@ class WallpaperRepository(private val wallpaperDao: WallpaperDao) {
         }
     }
 
-    fun getAllWallpapers(): Flow<List<Wallpaper>> = wallpaperDao.getWallpapersFlow()
+    fun getAllWallpapers(): Flow<List<WallpaperEntity>> = wallpaperDao.getWallpapersFlow()
 
 
-    fun wallpapersPager(
-        sort: WallpaperSort = WallpaperSort(SortType.DATE , SortOrder.DESC)
-    ): Flow<PagingData<Wallpaper>>{
-        return getWallpapersPager(sort).flow.flowOn(Dispatchers.IO)
-    }
 
-     fun getWallpapersPager(sort : WallpaperSort): Pager<Int, Wallpaper> {
-         var list : ArrayList<Wallpaper>
+     fun getWallpapersPager(sort : WallpaperSort): Pager<Int, WallpaperEntity> {
             return Pager(
                 config = PagingConfig(
                     pageSize = 20,
