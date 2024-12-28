@@ -26,8 +26,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.datasource.CollectionPreviewParameterProvider
 
 
 @Composable
@@ -81,3 +84,29 @@ fun Modifier.shrimmerEffect() : Modifier = composed {
         size.value = it.size
     }
 }
+
+
+
+// Define a data class for props
+data class PreviewWallpaperCardProps(
+    val modifier: Modifier
+)
+
+// Implement a CollectionPreviewParameterProvider for WallpaperCardProps
+class PlaceholderWallpaperCardPropsProvider : CollectionPreviewParameterProvider<PreviewWallpaperCardProps>(
+    listOf(
+        PreviewWallpaperCardProps(Modifier.fillMaxWidth(0.5f)),
+        PreviewWallpaperCardProps(Modifier.fillMaxWidth(0.8f))
+    )
+)
+
+@Preview
+@Composable
+fun PlaceholderWallpaperCardPreview(
+    @PreviewParameter(PlaceholderWallpaperCardPropsProvider::class) props: PreviewWallpaperCardProps
+) {
+    PlaceholderWallpaperCard(
+        modifier = props.modifier
+    )
+}
+
