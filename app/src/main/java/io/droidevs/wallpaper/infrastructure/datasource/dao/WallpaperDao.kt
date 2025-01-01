@@ -18,9 +18,9 @@ import kotlin.system.measureTimeMillis
 @Dao
 interface WallpaperDao {
 
+    /*
     @Query("SELECT * FROM wallpapers ORDER BY dateModified DESC")
     fun getWallpapersPagingSource(): PagingSource<Int, WallpaperEntity>
-
 
     @Query("SELECT * FROM wallpapers ORDER BY name DESC")
     fun getWallpapersPagingSourceByNameDEC(): PagingSource<Int, WallpaperEntity>
@@ -39,6 +39,38 @@ interface WallpaperDao {
 
     @Query("SELECT * FROM wallpapers ORDER BY width ASC")
     fun getWallpapersPagingSourceByWidthASC(): PagingSource<Int, WallpaperEntity>
+*/
+
+    @Query("SELECT * FROM wallpapers ORDER BY name DESC LIMIT :limit OFFSET :offset")
+    fun getWallpapersPageByNameDEC(offset: Int, limit : Int) : List<WallpaperEntity>
+
+    @Query("SELECT * FROM wallpapers ORDER BY name ASC LIMIT :limit OFFSET :offset")
+    fun getWallpapersPageByNameASC(limit: Int, offset: Int): List<WallpaperEntity>
+
+    @Query("SELECT * FROM wallpapers ORDER BY size DESC LIMIT :limit OFFSET :offset")
+    fun getWallpapersPageBySizeDESC(limit: Int, offset: Int): List<WallpaperEntity>
+
+    @Query("SELECT * FROM wallpapers ORDER BY size ASC LIMIT :limit OFFSET :offset")
+    fun getWallpapersPageBySizeASC(limit: Int, offset: Int): List<WallpaperEntity>
+
+    @Query("SELECT * FROM wallpapers ORDER BY width DESC LIMIT :limit OFFSET :offset")
+    fun getWallpapersPageByWidthDESC(limit: Int, offset: Int): List<WallpaperEntity>
+
+    @Query("SELECT * FROM wallpapers ORDER BY width ASC LIMIT :limit OFFSET :offset")
+    fun getWallpapersPageByWidthASC(limit: Int, offset: Int): List<WallpaperEntity>
+
+    @Query("SELECT * FROM wallpapers ORDER BY height DESC LIMIT :limit OFFSET :offset")
+    fun getWallpapersPageByHeightDESC(limit: Int, offset: Int): List<WallpaperEntity>
+
+    @Query("SELECT * FROM wallpapers ORDER BY height ASC LIMIT :limit OFFSET :offset")
+    fun getWallpapersPageByHeightASC(limit: Int, offset: Int): List<WallpaperEntity>
+
+    @Query("SELECT * FROM wallpapers ORDER BY dateModified ASC LIMIT :limit OFFSET :offset")
+    fun getWallpapersPageByDateASC(limit: Int, offset: Int): List<WallpaperEntity>
+
+    @Query("SELECT * FROM wallpapers ORDER BY dateModified DESC LIMIT :limit OFFSET :offset")
+    fun getWallpapersPageByDateDESC(limit: Int, offset: Int): List<WallpaperEntity>
+
 
 
     @Query("SELECT * FROM wallpapers ORDER BY dateModified DESC")

@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import io.droidevs.wallpaper.domain.Wallpaper
 import io.droidevs.wallpaper.infrastructure.datasource.dao.WallpaperDao
 import io.droidevs.wallpaper.infrastructure.datasource.instances.WallpaperDatabase
 import io.droidevs.wallpaper.infrastructure.model.WallpaperEntity
@@ -15,6 +16,7 @@ import io.droidevs.wallpaper.infrastructure.util.isOrderAsc
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.selects.whileSelect
 
 
 class WallpaperRepository(private val wallpaperDao: WallpaperDao) {
@@ -44,6 +46,54 @@ class WallpaperRepository(private val wallpaperDao: WallpaperDao) {
     fun getAllWallpapers(): Flow<List<WallpaperEntity>> = wallpaperDao.getWallpapersFlow()
 
 
+    fun getWallpapers(page: Int, pageSize : Int,sort: WallpaperSort) : List<WallpaperEntity>{
+        val startIndex = page*pageSize
+        return with(sort){
+            when(sortType){
+                SortType.NAME -> {
+                    if (sortOrder == SortOrder.ASC)
+                        wallpaperDao.getWallpapersPageByNameASC(startIndex,pageSize)
+                    else
+                        wallpaperDao.getWallpapersPageByNameDEC(startIndex,pageSize)
+                }
+                SortType.WIDTH -> {
+                    if (sortOrder == SortOrder.ASC)
+                        wallpaperDao.getWallpapersPageByWidthASC(startIndex,pageSize)
+                    else
+                        wallpaperDao.getWallpapersPageByWidthDESC(startIndex,pageSize)
+                }
+                SortType.HEIGHT -> {
+                    if (sortOrder == SortOrder.ASC)
+                        wallpaperDao.getWallpapersPageByHeightASC(startIndex,pageSize)
+                    else
+                        wallpaperDao.getWallpapersPageByHeightDESC(startIndex,pageSize)
+                }
+                SortType.DATE -> {
+                    if (sortOrder == SortOrder.ASC)
+                        wallpaperDao.getWallpapersPageByDateASC(startIndex,pageSize)
+                    else
+                        wallpaperDao.getWallpapersPageByDateDESC(startIndex,pageSize)
+                }
+                else -> {
+                    if (sortOrder == SortOrder.ASC)
+                        wallpaperDao.getWallpapersPageByDateASC(startIndex,pageSize)
+                    else
+                        wallpaperDao.getWallpapersPageByDateDESC(startIndex,pageSize)
+                }
+            }
+        }
+    }
+
+
+
+    fun getWallpapersPage(page : Int , pageSize : Int, sort: WallpaperSort = WallpaperSort(SortType.DATE,SortOrder.DESC)) : Result<List<WallpaperEntity>>{
+        return Result.success(
+            getWallpapers(page,pageSize,sort)
+        )
+    }
+
+
+    /*
 
      fun getWallpapersPager(sort : WallpaperSort): Pager<Int, WallpaperEntity> {
             return Pager(
@@ -80,6 +130,6 @@ class WallpaperRepository(private val wallpaperDao: WallpaperDao) {
                     }
                 }
             )
-    }
+    }*/
 
 }
