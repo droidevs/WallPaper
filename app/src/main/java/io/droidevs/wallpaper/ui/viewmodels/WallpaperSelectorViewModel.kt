@@ -1,31 +1,13 @@
 package io.droidevs.wallpaper.ui.viewmodels
 
 import android.app.Application
-import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.paging.map
 import io.droidevs.wallpaper.domain.Wallpaper
-import io.droidevs.wallpaper.infrastructure.datasource.instances.WallpaperDatabase
-import io.droidevs.wallpaper.infrastructure.mappers.toDomainModel
 import io.droidevs.wallpaper.infrastructure.repository.WallpaperRepository
-import io.droidevs.wallpaper.infrastructure.util.SortOrder
-import io.droidevs.wallpaper.infrastructure.util.SortType
-import io.droidevs.wallpaper.infrastructure.util.WallpaperSort
-
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
-class WallpaperListViewModel(application: Application, wallpaperRepository: WallpaperRepository) : AndroidViewModel(application) {
-
-    var lazyGridState: LazyStaggeredGridState by mutableStateOf(LazyStaggeredGridState(0, 0))
+class WallpaperSelectorViewModel(application: Application, wallpaperRepository: WallpaperRepository) : AndroidViewModel(application) {
 
     private val _isSelectionMode = MutableStateFlow(false)
     val isSelectionMode: StateFlow<Boolean> get() = _isSelectionMode
@@ -53,29 +35,6 @@ class WallpaperListViewModel(application: Application, wallpaperRepository: Wall
     fun deselect(wallpaper: Wallpaper){
         wallpaper.selected = false
         selectedWallpapers.value.remove(wallpaper.id)
-    }
-
-    val wallpaperPaggingFlow = {
-        val sort = WallpaperSort(SortType.NAME,SortOrder.DESC) //TODO(GET IT FROM PREFERENCES)
-        wallpaperRepository.getWallpapersPager(sort)
-            .flow
-            .map {
-                paggingData ->
-                paggingData.map {
-                    it.toDomainModel()
-                }
-            }
-    }
-
-    fun deleteSelectedWallpapers() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val wallpaperDatabase = WallpaperDatabase.getInstance(getApplication())
-            val wallpaperDao = wallpaperDatabase?.wallpaperDao()
-
-            selectedWallpapers.value.forEach {
-
-            }
-        }
     }
 
     fun resetSelectedWallpapersState() {
