@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">WallPaper</string>
+    <string name="delete">Delete</string>
+    <string name="delete_selected_wallpapers_message">Are you sure you want to delete selected wallpapers</string>
+    <string name="wallpaper_content_description">Wallpaper From Device Storage</string>
+
+
+    <!-- Description for the back button -->
+    <string name="back">Back</string>
+    <!-- Description for the settings button -->
+    <string name="settings">Settings</string>
 </resources>
