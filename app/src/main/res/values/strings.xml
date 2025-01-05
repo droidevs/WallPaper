@@ -9,4 +9,15 @@
     <string name="back">Back</string>
     <!-- Description for the settings button -->
     <string name="settings">Settings</string>
+    <string name="home_screen_btn">Home</string>
+    <string name="lock_screen_btn">Lock</string>
+    <string name="both_screen_btn">Both</string>
+    <string name="apply">Apply</string>
+    <string name="auto_wallpaper_set_screen">Chose Screen Type</string>
+
+    <plurals name="wallpaper_count">
+        <item quantity="one">%d wallpaper</item>
+        <item quantity="other">%d wallpapers</item>
+    </plurals>
+
 </resources>
