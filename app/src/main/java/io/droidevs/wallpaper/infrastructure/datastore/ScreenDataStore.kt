@@ -41,11 +41,13 @@ class ScreenDataStore @Inject constructor (
                     Screen.Home -> Values.home
                     Screen.Lock -> Values.lock
                     Screen.Both -> Values.both
+                    else -> Values.none
                 }
         }
     }
 
     object Values {
+        val none = "none"
         val home = "home"
         val lock = "lock"
         val both = "both"

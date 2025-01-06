@@ -28,3 +28,19 @@ sealed class TimeInterval(val interval: Long) {
 
     object EveryWeek : TimeInterval(7 * 24 * 60 * 60 * 1000L) // 1 week
 }
+
+
+val timeIntervales = listOf(
+    TimeInterval.Off,
+    TimeInterval.EveryMinute,
+    TimeInterval.Every5Minute,
+    TimeInterval.Every15Minute,
+    TimeInterval.Every30Minute,
+    TimeInterval.EveryHour,
+    TimeInterval.Every3Hour,
+    TimeInterval.Every6Hour,
+    TimeInterval.Every12Hour,
+    TimeInterval.EveryDay,
+    TimeInterval.Every3Days,
+    TimeInterval.EveryWeek
+)

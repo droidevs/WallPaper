@@ -1,4 +1,4 @@
-package io.droidevs.wallpaper.infrastructure.datastore
+package io.droidevs.wallpaper.infrastructure.datastore.module
 
 import android.content.Context
 import androidx.datastore.core.DataStore
