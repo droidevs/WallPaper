@@ -1,4 +1,4 @@
-package io.droidevs.wallpaper.ui.commons
+package io.droidevs.wallpaper.ui.bottomsheet
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
+import io.droidevs.wallpaper.ui.commons.ModalSideSheet
+import io.droidevs.wallpaper.ui.commons.SideSheetState
+import io.droidevs.wallpaper.ui.commons.rememberSideSheetState
 import io.droidevs.wallpaper.ui.system.System
 import io.droidevs.wallpaper.ui.system.window
 import kotlinx.coroutines.launch
