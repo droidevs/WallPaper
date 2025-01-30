@@ -7,10 +7,10 @@ import androidx.room.PrimaryKey
 data class AlbumEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    val title: String,
-    val artist: String,
-    val releaseYear: Int,
-    val genre: String,
+    val title: String = "",
+    val artist: String = "",
+    val releaseYear: Int = 0,
+    val genre: String = "",
     val coverImageUrl: String? = null, // Optional for album cover image
     val totalWallpapers : Int = 0
 )
