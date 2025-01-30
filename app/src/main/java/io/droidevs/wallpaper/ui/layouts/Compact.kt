@@ -1,80 +1,85 @@
 package io.droidevs.wallpaper.ui.layouts
 
 import android.annotation.SuppressLint
+import android.os.Build
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowInsetsCompat
 import io.droidevs.wallpaper.ui.system.System
 import io.droidevs.wallpaper.ui.system.window
 
-/**
- * This is the template for phones - Portrait and Landscape.
- */
-@Composable
-fun CompactLayoutScrollable(
-    mainContent: @Composable () -> Unit
-) {
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-    ) {
-        mainContent()
-    }
-
-}
-
-@Composable
-fun CompactLayout(
-    mainContent: @Composable () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        mainContent()
-    }
-
-}
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompactLayoutWithScaffold(
     mainContent: @Composable () -> Unit,
     allowScroll: Boolean = true,
-    appScaffoldPaddingValues: PaddingValues = PaddingValues(),
+    applyPadding: Boolean = true,
     topAppBar: @Composable () -> Unit,
-    floatingActionButton: @Composable () -> Unit
+    floatingActionButton: @Composable () -> Unit,
+    isStandalone: Boolean = true // Added parameter to check standalone mode
 ) {
+    val context = LocalContext.current
+    var statusBarHeight by remember { mutableIntStateOf(0) }
+    var navigationBarHeight by remember { mutableIntStateOf(0) }
+
+    var topPadding = 0.dp
+    var bottomPadding = 0.dp
+
+    // Apply padding only if `isStandalone` is true
+    if (isStandalone && applyPadding) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            statusBarHeight = WindowInsetsCompat.toWindowInsetsCompat(
+                LocalView.current.rootWindowInsets).getInsets(WindowInsetsCompat.Type.statusBars()).top
+            navigationBarHeight = WindowInsetsCompat.toWindowInsetsCompat(
+                LocalView.current.rootWindowInsets).getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+
+            val statusBarHeightPx = statusBarHeight
+            val statusBarHeightDp = with(LocalDensity.current) { statusBarHeightPx.toDp() }
+            val navigationBarHeightPx = navigationBarHeight
+            val navigationBarHeightDp = with(LocalDensity.current) { navigationBarHeightPx.toDp() }
+
+            topPadding = 8.dp + statusBarHeightDp
+            bottomPadding = 8.dp + navigationBarHeightDp
+        } else {
+            topPadding = 16.dp
+            bottomPadding = 16.dp
+        }
+    }
 
     Scaffold(
-        topBar = {
-            topAppBar()
-        },
-        floatingActionButton = {
-            floatingActionButton()
-        }
+        topBar = { topAppBar() },
+        floatingActionButton = { floatingActionButton() }
     ) {
-
         val appLayoutMode = System.window.state.value.layout.appLayoutMode
 
-        val sidePadding = when(appLayoutMode) {
-            AppLayoutMode.PHONE_LANDSCAPE -> 40.dp
-            AppLayoutMode.NARROW_TABLET -> 40.dp
-            else -> 16.dp
+        var sidePadding = 0.dp
+
+        // Apply padding for different layout modes
+        if (isStandalone && applyPadding) {
+            sidePadding = when (appLayoutMode) {
+                AppLayoutMode.PHONE_LANDSCAPE -> 40.dp
+                AppLayoutMode.NARROW_TABLET -> 40.dp
+                else -> 16.dp
+            }
         }
 
         val columnPadding = PaddingValues(
-            bottom = appScaffoldPaddingValues.calculateBottomPadding(),
+            top = topPadding,
+            bottom = bottomPadding,
             start = sidePadding,
             end = sidePadding
         )
@@ -83,10 +88,12 @@ fun CompactLayoutWithScaffold(
             .fillMaxWidth()
             .padding(columnPadding)
 
+        // Apply scrolling behavior
         if (allowScroll) {
             columnModifier = columnModifier.verticalScroll(rememberScrollState())
         }
 
+        // Main content layout
         Column(
             modifier = columnModifier,
             horizontalAlignment = Alignment.CenterHorizontally
