@@ -1,40 +1,89 @@
 package io.droidevs.wallpaper.ui.commons
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import io.droidevs.wallpaper.ui.model.BottomNavigationItem
+import androidx.compose.ui.unit.dp
+import io.droidevs.wallpaper.ui.model.NavigationItem
 
 @Composable
 fun BottomNavigationBar(
-    navigationItems : List<BottomNavigationItem>,
-    selected : Int,
-    onNavigateTo : (id : Int) -> Unit
-    ) {
+    navigationItems: List<NavigationItem>,
+    selected: Int,
+    onNavigateTo: (id: Int) -> Unit
+) {
     NavigationBar(
-        //containerColor = MaterialTheme.colorScheme.primaryContainer,
-        //tonalElevation = 20.dp,
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(10.dp, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.9f),
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f)
+                    )
+                )
+            )
+            .blur(10.dp), // Glass effect
+        containerColor = Color.Transparent,
+        tonalElevation = 12.dp
     ) {
         navigationItems.forEach { item ->
+            val isSelected = item.id == selected
+
+            val iconSize by animateDpAsState(
+                targetValue = if (isSelected) 32.dp else 24.dp,
+                animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f)
+            )
+
+            val iconColor by animateColorAsState(
+                targetValue = if (isSelected) MaterialTheme.colorScheme.onPrimary
+                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                animationSpec = tween(durationMillis = 300)
+            )
+
             NavigationBarItem(
-                label = { Text(text = item.title) },
-                selected = item.id == selected,
+                selected = isSelected,
                 onClick = { onNavigateTo(item.id) },
+                label = {
+                    Text(
+                        text = item.title,
+                        color = iconColor,
+                        style = TextStyle(fontWeight = FontWeight.Medium)
+                    )
+                },
                 icon = {
                     Icon(
-                        imageVector =
-                        if (selected == item.id)
-                            item.selectedIcon
-                        else
-                            item.unselectedIcon,
-
-                        contentDescription = null,
+                        imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
+                        contentDescription = item.title,
+                        modifier = Modifier
+                            .size(iconSize)
+                            .graphicsLayer {
+                                scaleX = if (isSelected) 1.1f else 1f
+                                scaleY = if (isSelected) 1.1f else 1f
+                            },
+                        tint = iconColor
                     )
                 }
             )
@@ -43,24 +92,25 @@ fun BottomNavigationBar(
 }
 
 
+
 @Composable
-fun previewNavigationItems(): List<BottomNavigationItem> {
+fun previewNavigationItems(): List<NavigationItem> {
     return listOf(
-        BottomNavigationItem(
+        NavigationItem(
             id = 0,
             title = "Home",
             selectedIcon = ImageVector.vectorResource(android.R.drawable.star_on),
             unselectedIcon = ImageVector.vectorResource(android.R.drawable.star_off),
             hasNews = true
         ),
-        BottomNavigationItem(
+        NavigationItem(
             id = 1,
             title = "Search",
             selectedIcon = ImageVector.vectorResource(android.R.drawable.ic_menu_search),
             unselectedIcon = ImageVector.vectorResource(android.R.drawable.ic_menu_search),
             hasNews = false
         ),
-        BottomNavigationItem(
+        NavigationItem(
             id = 2,
             title = "Profile",
             selectedIcon = ImageVector.vectorResource(android.R.drawable.ic_menu_manage),
