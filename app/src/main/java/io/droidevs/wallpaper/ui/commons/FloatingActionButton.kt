@@ -1,17 +1,36 @@
 package io.droidevs.wallpaper.ui.commons
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,70 +53,66 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 fun AppFloatingActionButton(
+    modifier: Modifier = Modifier, // Modifier for the FAB.
     showFAB: Boolean = true, // Visibility of the FAB.
     text: String = "", // Text displayed on the FAB when expanded.
     icon: ImageVector = Icons.Default.MoreVert, // Default icon for the FAB.
-    fabColor: Color, // Background color of the FAB.
+    fabColor: Color = MaterialTheme.colorScheme.primary, // Background color of the FAB.
     isFabExpanded: Boolean = false, // Whether the FAB is in an expanded state.
     onClick: () -> Unit, // Action to perform when the FAB is clicked.
     contentPadding: Dp = 16.dp, // Padding around the FAB.
 ) {
-    // Animates the visibility of the FAB.
+
+    val animatedFabColor by animateColorAsState(
+        targetValue = if (isFabExpanded) MaterialTheme.colorScheme.secondary else fabColor,
+        animationSpec = tween(300)
+    )
+
+    val scale by animateFloatAsState(
+        targetValue = if (isFabExpanded) 1.1f else 1f,
+        animationSpec = spring(dampingRatio = 0.5f, stiffness = 300f)
+    )
+
+    val shadow by animateDpAsState(
+        targetValue = if (isFabExpanded) 12.dp else 6.dp,
+        animationSpec = tween(300)
+    )
+
     AnimatedVisibility(
-        visible = showFAB, // FAB is visible based on this flag.
-        enter = slideInVertically( // Animation for entering the screen.
-            initialOffsetY = { it / 2 } // Starts sliding in from half its height.
-        ),
-        exit = slideOutVertically( // Animation for exiting the screen.
-            targetOffsetY = { it / 2 } // Slides out to half its height.
-        ),
+        visible = showFAB,
+        enter = scaleIn(initialScale = 0.8f) + fadeIn(),
+        exit = scaleOut(targetScale = 0.8f) + fadeOut()
     ) {
-        // The floating action button, can be expanded to show text and an icon.
         ExtendedFloatingActionButton(
-            modifier = Modifier.padding(contentPadding), // Apply padding around the FAB.
-            containerColor = fabColor, // Background color of the FAB.
-            onClick = onClick, // Trigger the click callback.
-            expanded = isFabExpanded, // Determines if the FAB shows text or just the icon.
+            modifier = modifier
+                .padding(contentPadding)
+                .scale(scale)
+                .shadow(shadow, shape = CircleShape)
+                .clip(CircleShape)
+                .background(animatedFabColor.copy(alpha = 0.85f))
+                .blur(8.dp), // Glassmorphism effect
+            containerColor = animatedFabColor,
+            onClick = {
+                onClick()
+            },
+            expanded = isFabExpanded,
             icon = {
-                // Icon displayed on the FAB.
                 Icon(
-                    imageVector = icon, // Use the provided icon.
-                    contentDescription = "", // No description for accessibility here.
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(28.dp)
                 )
             },
             text = {
-                // Text displayed on the FAB when expanded.
                 Text(
-                    text = text, // Use the provided text.
+                    text = text,
+                    style = MaterialTheme.typography.bodyMedium
                 )
-            },
+            }
         )
     }
 }
 
-/**
- * A specific implementation of [AppFloatingActionButton] for adding wallpapers.
- *
- * @param showFAB Determines if the FAB should be visible.
- * @param isFabExpanded Determines if the FAB should display its text (expanded state).
- * @param onClick Callback for handling FAB click events.
- */
-@Composable
-fun AddWallpapersFloatingActionButton(
-    showFAB: Boolean = true, // Visibility of the FAB.
-    isFabExpanded: Boolean = false, // Whether the FAB is in an expanded state.
-    onClick: () -> Unit, // Action to perform when the FAB is clicked.
-) {
-    // Call the general FAB composable with specific parameters for adding wallpapers.
-    AppFloatingActionButton(
-        showFAB = showFAB, // Pass visibility flag.
-        text = "Add Wallpapers", // Text specific to this FAB.
-        icon = Icons.Default.Add, // Use the 'Add' icon for this FAB.
-        fabColor = Color.Green, // Green color for this FAB.
-        isFabExpanded = isFabExpanded, // Pass expansion state.
-        onClick = onClick // Pass the click action.
-    )
-}
 
 
 
@@ -156,16 +171,5 @@ fun PreviewAppFloatingActionButton(
         isFabExpanded = props.isFabExpanded,
         onClick = {}, // No-op click action for preview
         contentPadding = props.contentPadding.dp
-    )
-}
-
-// Preview composable for AddWallpapersFloatingActionButton
-@Preview(showBackground = true)
-@Composable
-fun PreviewAddWallpapersFloatingActionButton() {
-    AddWallpapersFloatingActionButton(
-        showFAB = true,
-        isFabExpanded = true,
-        onClick = {} // No-op click action for preview
     )
 }
