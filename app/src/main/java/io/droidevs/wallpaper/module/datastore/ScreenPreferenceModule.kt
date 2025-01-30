@@ -1,4 +1,4 @@
-package io.droidevs.wallpaper.infrastructure.datastore.module
+package io.droidevs.wallpaper.module.datastore
 
 import dagger.Binds
 import dagger.Module

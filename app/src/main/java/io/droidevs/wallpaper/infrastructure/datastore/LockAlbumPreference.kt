@@ -3,10 +3,10 @@ package io.droidevs.wallpaper.infrastructure.datastore
 import io.droidevs.wallpaper.infrastructure.model.AlbumEntity
 import kotlinx.coroutines.flow.Flow
 
-interface AlbumPreference {
+interface LockAlbumPreference {
 
-    suspend fun saveAlbum(album: AlbumEntity)
+    suspend fun setLockAlbum(album: AlbumEntity)
 
-    suspend fun retrieveAlbum() : Flow<AlbumEntity>
+    suspend fun retrieveLockAlbum() : Flow<AlbumEntity>
 
 }
