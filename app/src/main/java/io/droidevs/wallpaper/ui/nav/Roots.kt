@@ -10,6 +10,8 @@ interface AppDestination {
 @Serializable
 sealed class Screen(override val route: String) : AppDestination {
 
+    object Home : Screen("home")
+
     @Serializable
     object WallpaperList : Screen("wallpaper_list")
 
@@ -60,7 +62,7 @@ open class Graph(override val route: String) : AppDestination {
     object App : Graph("app")
 
     @Serializable
-    object Home : Graph("home")
+    object Dashboard : Graph("home")
 
     @Serializable
     object Wallpapers : Graph("wallpapers")
@@ -69,7 +71,7 @@ open class Graph(override val route: String) : AppDestination {
     object Albums : Graph("albums")
 
     companion object {
-        val allGraphs = listOf(App, Home, Wallpapers, Albums)
+        val allGraphs = listOf(App, Dashboard, Wallpapers, Albums)
     }
 }
 
