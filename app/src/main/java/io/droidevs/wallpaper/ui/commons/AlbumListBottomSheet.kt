@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +48,7 @@ fun AlbumListBottomSheet(
     sheetState: SheetState = rememberModalBottomSheetState(),
     onDismissRequest: () -> Unit,
     albums: List<Album>,
+    selectedAlbum: Long = -1,
     onAlbumClick: (Album) -> Unit,
     onCreateAlbumClick: () -> Unit
 ) {
@@ -80,9 +82,12 @@ fun AlbumListBottomSheet(
                     CreateAlbumItem(onCreateAlbumClick)
                 }
                 items(albumList.size) { albumIndex ->
-                    AlbumItem(albumList[albumIndex], onAlbumClick)
+                    val album = albumList[albumIndex]
+                    val isSelected = album.id == selectedAlbum // Assuming `selectedAlbums` is a list of selected albums
+                    AlbumItem(album = album, isSelected = isSelected, onAlbumClick = onAlbumClick)
                 }
             }
+
         }
     }
 }
@@ -111,12 +116,16 @@ fun CreateAlbumItem(onCreateAlbumClick: () -> Unit) {
 }
 
 @Composable
-fun AlbumItem(album: Album, onAlbumClick: (Album) -> Unit) {
+fun AlbumItem(album: Album, isSelected: Boolean, onAlbumClick: (Album) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .background(MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(12.dp))
+            .background(
+                if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                else MaterialTheme.colorScheme.surfaceVariant,
+                shape = RoundedCornerShape(12.dp)
+            )
             .clickable { onAlbumClick(album) }
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -128,7 +137,7 @@ fun AlbumItem(album: Album, onAlbumClick: (Album) -> Unit) {
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.width(12.dp))
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = album.title,
                 style = MaterialTheme.typography.bodyLarge,
@@ -140,5 +149,13 @@ fun AlbumItem(album: Album, onAlbumClick: (Album) -> Unit) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+        if (isSelected) {
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = "Selected",
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
     }
 }
+
