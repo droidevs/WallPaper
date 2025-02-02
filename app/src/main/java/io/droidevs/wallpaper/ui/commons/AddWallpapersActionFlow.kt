@@ -49,7 +49,7 @@ import kotlinx.coroutines.launch
 fun AddWallpapersActionFlow(
     albums: List<Album>,
     onAlbumClick: (Album) -> Unit,
-    onCreateAlbumClick: () -> Unit
+    onCreateAlbum: (albumName: String) -> Unit
 ) {
     // State to manage FAB visibility
     val showFAB = remember { mutableStateOf(true) }
@@ -113,7 +113,7 @@ fun AddWallpapersActionFlow(
         },
         albums = albums,
         onAlbumClick = onAlbumClick,
-        onCreateAlbumClick = onCreateAlbumClick
+        onAlbumCreated = onCreateAlbum
     )
 }
 
@@ -159,7 +159,7 @@ fun AddWallpapersActionFlowPreview(
     AddWallpapersActionFlow(
         albums = props.albums,
         onAlbumClick = {},
-        onCreateAlbumClick = {},
+        onCreateAlbum = {},
     )
 }
 
