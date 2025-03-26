@@ -34,4 +34,11 @@
     <string name="every_3_days">Every 3 Days</string>
     <string name="every_week">Every Week</string>
     <string name="please_wait">Please Wait</string>
+    <string name="edit">Edit</string>
+    <string name="select">Select</string>
+    <string name="close">Close</string>
+    <string name="compress">Compress</string>
+    <string name="move">Move</string>
+    <string name="reduce_resolution">Reduce Resolution</string>
+    <string name="send">Send</string>
 </resources>
