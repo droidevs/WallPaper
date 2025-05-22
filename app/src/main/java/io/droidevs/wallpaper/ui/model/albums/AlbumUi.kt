@@ -1,8 +1,6 @@
-package io.droidevs.wallpaper.domain
+package io.droidevs.wallpaper.ui.model.albums
 
-
-
-data class Album(
+data class AlbumUi(
     val id: Long,
     val title: String,
     val description: String = "",

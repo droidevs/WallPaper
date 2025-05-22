@@ -1,7 +1,7 @@
-package io.droidevs.wallpaper.infrastructure.mappers
+package io.droidevs.wallpaper.data.mappers
 
 import io.droidevs.wallpaper.domain.Album
-import io.droidevs.wallpaper.infrastructure.model.AlbumEntity
+import io.droidevs.wallpaper.data.model.AlbumEntity
 
 fun AlbumEntity.toDomainModel(): Album {
     return Album(

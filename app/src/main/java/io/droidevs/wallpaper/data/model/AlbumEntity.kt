@@ -1,4 +1,4 @@
-package io.droidevs.wallpaper.infrastructure.model
+package io.droidevs.wallpaper.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
