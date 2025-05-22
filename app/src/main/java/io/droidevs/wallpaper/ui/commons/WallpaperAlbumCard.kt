@@ -46,8 +46,6 @@ fun WallpaperAlbumCard(
     title: String,
     wallpaperCount: Int,
     previewImage: Painter,
-    isFavorite: Boolean,
-    onFavoriteClick: () -> Unit,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -111,26 +109,6 @@ fun WallpaperAlbumCard(
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                     )
                 }
-            }
-
-            // Favorite Button
-            IconButton(
-                onClick = onFavoriteClick,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp)
-                    .size(36.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
-                        shape = CircleShape
-                    )
-            ) {
-                Icon(
-                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.Favorite,
-                    contentDescription = "Favorite",
-                    tint = if (isFavorite) MaterialTheme.colorScheme.error
-                    else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
-                )
             }
         }
     }

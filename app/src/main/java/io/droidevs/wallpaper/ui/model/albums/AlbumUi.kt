@@ -6,5 +6,6 @@ data class AlbumUi(
     val description: String = "",
     val createdAt : Long = System.currentTimeMillis(),
     val coverImageUrl: String? = null,
-    val total : Int = 0
+    val total : Int = 0,
+    val isSelected : Boolean = false
 )
