@@ -7,29 +7,34 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.droidevs.wallpaper.ui.system.window.AppLayoutInfo
+import io.droidevs.wallpaper.ui.window.LayoutMode
+
+import io.droidevs.wallpaper.ui.window.LocalWindow
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DoubleLayoutWithScaffold(
-    appLayoutInfo: AppLayoutInfo,
     leftContent: @Composable () -> Unit,
     rightContent: @Composable () -> Unit,
-    topAppBar: @Composable () -> Unit,
+    topAppBar: (@Composable () -> Unit)? = null,
     isStandalone: Boolean = true // Determines whether to apply external padding
 ) {
-    val sidePadding = when (appLayoutInfo.appLayoutMode) {
-        AppLayoutMode.DOUBLE_BIG -> 52.dp
-        AppLayoutMode.FOLDED_SPLIT_BOOK -> 16.dp
+    val layoutMode = LocalWindow.current.layoutMode
+    val sidePadding = when (layoutMode) {
+        LayoutMode.DOUBLE_BIG -> 52.dp
+        LayoutMode.DOUBLE_MEDIUM -> 16.dp
         else -> 16.dp
     }
 
     Scaffold(
-        topBar = { topAppBar() }
+        topBar = {
+            if (topAppBar != null) {
+                topAppBar()
+            }
+        }
     ) { paddingValues ->
         Row(
             modifier = Modifier

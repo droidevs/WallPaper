@@ -18,19 +18,18 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowInsetsCompat
-import io.droidevs.wallpaper.ui.system.System
-import io.droidevs.wallpaper.ui.system.window
-
+import io.droidevs.wallpaper.ui.window.LayoutMode
+import io.droidevs.wallpaper.ui.window.LocalWindow
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CompactLayoutWithScaffold(
-    mainContent: @Composable () -> Unit,
     allowScroll: Boolean = true,
     applyPadding: Boolean = true,
     topAppBar: @Composable () -> Unit,
     floatingActionButton: @Composable () -> Unit,
-    isStandalone: Boolean = true // Added parameter to check standalone mode
+    isStandalone: Boolean = true, // Added parameter to check standalone mode
+    mainContent: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
     var statusBarHeight by remember { mutableIntStateOf(0) }
@@ -64,15 +63,15 @@ fun CompactLayoutWithScaffold(
         topBar = { topAppBar() },
         floatingActionButton = { floatingActionButton() }
     ) {
-        val appLayoutMode = System.window.state.value.layout.appLayoutMode
+        val appLayoutMode = LocalWindow.current.layoutMode
 
         var sidePadding = 0.dp
 
         // Apply padding for different layout modes
         if (isStandalone && applyPadding) {
             sidePadding = when (appLayoutMode) {
-                AppLayoutMode.PHONE_LANDSCAPE -> 40.dp
-                AppLayoutMode.NARROW_TABLET -> 40.dp
+                LayoutMode.PHONE_LANDSCAPE -> 40.dp
+                LayoutMode.NARROW_TABLET -> 40.dp
                 else -> 16.dp
             }
         }
