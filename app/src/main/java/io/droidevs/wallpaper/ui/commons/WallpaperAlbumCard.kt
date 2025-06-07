@@ -1,13 +1,17 @@
 package io.droidevs.wallpaper.ui.commons
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +26,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,13 +36,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import io.droidevs.wallpaper.ui.model.albums.AlbumUi
@@ -58,9 +71,6 @@ fun WallpaperAlbumCard(
         label = "cardElevation"
     )
 
-    // State to control the visibility of the DropdownMenu
-    var isMenuExpanded by remember { mutableStateOf(false) }
-
     // The list of actions to show in the menu
     val actions = listOf(
         WallpaperAlbumAction.SelectAction,
@@ -69,16 +79,23 @@ fun WallpaperAlbumCard(
         WallpaperAlbumAction.DeleteAction
     )
 
+    var isContextMenuVisible by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var itemHeight by remember { mutableStateOf(0.dp) }
+
+    val density = LocalDensity.current
+
+
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .pointerInput(true){
-                detectTapGestures(
-                    onLongPress = {
-                        //todo
-                    }
-                )
+            .onSizeChanged {
+                itemHeight = with(density){
+                    it.height.toDp()
+                }
             }
+            .fillMaxWidth()
             .clickable(
                 interactionSource = interactionSource,
                 indication = ripple(
@@ -95,7 +112,20 @@ fun WallpaperAlbumCard(
             pressedElevation = 2.dp
         ),
     ) {
-        Box {
+        Box(
+            modifier = Modifier.fillMaxWidth()
+                .indication(interactionSource, indication = LocalIndication.current)
+                .pointerInput(true){
+                    detectTapGestures(
+                        onPress = {
+                            var press = PressInteraction.Press(it)
+                            interactionSource.emit(press)
+                            tryAwaitRelease()
+                            interactionSource.emit(PressInteraction.Release(press))
+                        }
+                    )
+                }.padding(12.dp)
+        ) {
             // Main content
             Column {
                 // Image Preview
@@ -108,61 +138,67 @@ fun WallpaperAlbumCard(
                         .aspectRatio(16f / 9f)
                 )
 
-                // Details Section
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp)
-                ) {
-                    Text(
-                        text = album.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                Row {
+                    // Details Section
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp)
+                    ) {
+                        Text(
+                            text = album.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
 
-                    Text(
-                        text = "${album.total} wallpapers",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                    )
+                        Text(
+                            text = "${album.total} wallpapers",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                        )
+                    }
+
+                    Box {
+                        IconButton(
+                            modifier = Modifier.align(Alignment.TopEnd),
+                            onClick = {
+                                isContextMenuVisible = true
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "More Actions"
+                            )
+                        }
+
+                        // The DropdownMenu is a sibling to the IconButton inside the Box
+                        DropdownMenu(
+                            expanded = isContextMenuVisible,
+                            onDismissRequest = { isContextMenuVisible = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Edit") },
+                                onClick = {
+                                    onActionSelected(WallpaperAlbumAction.EditAction)
+                                    isContextMenuVisible = false // Close the menu after action
+                                },
+                                leadingIcon = { Icon(Icons.Default.Edit, contentDescription = "Rename") }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Delete") },
+                                onClick = {
+                                    onActionSelected(WallpaperAlbumAction.DeleteAction)
+                                    isContextMenuVisible = false
+                                },
+                                leadingIcon = { Icon(Icons.Default.Delete, contentDescription = "Delete") }
+                            )
+                        }
+                    }
                 }
-            }
-
-            IconButton(
-                modifier = Modifier.align(Alignment.TopEnd),
-                onClick = { isMenuExpanded = true }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "More Actions"
-                )
-            }
-
-            // The DropdownMenu is a sibling to the IconButton inside the Box
-            DropdownMenu(
-                expanded = isMenuExpanded,
-                onDismissRequest = { isMenuExpanded = false }
-            ) {
-                DropdownMenuItem(
-                    text = { Text("Edit") },
-                    onClick = {
-                        onActionSelected(WallpaperAlbumAction.EditAction)
-                        isMenuExpanded = false // Close the menu after action
-                    },
-                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = "Rename") }
-                )
-                DropdownMenuItem(
-                    text = { Text("Delete") },
-                    onClick = {
-                        onActionSelected(WallpaperAlbumAction.DeleteAction)
-                        isMenuExpanded = false
-                    },
-                    leadingIcon = { Icon(Icons.Default.Delete, contentDescription = "Delete") }
-                )
             }
         }
     }
