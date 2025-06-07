@@ -6,5 +6,6 @@ sealed interface AlbumListScreenEvent {
 
     data object AlbumDeleteFailed : AlbumListScreenEvent
 
+    data class NavigateToAlbumDetail(val albumId: Long) : AlbumListScreenEvent
 
 }
