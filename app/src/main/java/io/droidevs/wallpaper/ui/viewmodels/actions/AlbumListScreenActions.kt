@@ -13,8 +13,16 @@ sealed interface AlbumListScreenAction {
 
     data class ClickAlbum(val album: AlbumUi) : AlbumListScreenAction
 
-    data class SearchActiveChanged(val isActive: Boolean) : AlbumListScreenAction
+    data class EditAlbum(val album: AlbumUi) : AlbumListScreenAction
 
+
+    data class SearchActiveChanged(val isActive: Boolean) : AlbumListScreenAction
+    data class DeleteAlbum(val album: AlbumUi) : AlbumListScreenAction
     data object OnSearchAction : AlbumListScreenAction
+
+    data object DeleteAllSelected : AlbumListScreenAction
+
+    data object LoadMoreAlbums : AlbumListScreenAction
+
 
 }
