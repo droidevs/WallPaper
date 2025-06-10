@@ -1,14 +1,9 @@
-package io.droidevs.wallpaper.ui.nav
+package io.droidevs.wallpaper.ui.nav.roots
 
 import kotlinx.serialization.Serializable
 
-
-interface AppDestination {
-    val route: String
-}
-
 @Serializable
-sealed class Screen(override val route: String) : AppDestination {
+sealed class Screen(override val route: String) : Destination {
 
     object Home : Screen("home")
 
@@ -21,7 +16,9 @@ sealed class Screen(override val route: String) : AppDestination {
     object Albums : Screen("albums")
 
     @Serializable
-    object Album : Screen("album")
+    data class Album(
+        val albumId: Long
+    ) : Screen("album")
 
     @Serializable
     object LiveWallpapers : Screen("live_wallpapers")
@@ -53,28 +50,4 @@ sealed class Screen(override val route: String) : AppDestination {
             Licences, Settings, StartUp, Privacy, SetUp, About
         )
     }
-}
-
-@Serializable
-open class Graph(override val route: String) : AppDestination {
-
-    @Serializable
-    object App : Graph("app")
-
-    @Serializable
-    object Dashboard : Graph("home")
-
-    @Serializable
-    object Wallpapers : Graph("wallpapers")
-
-    @Serializable
-    object Albums : Graph("albums")
-
-    companion object {
-        val allGraphs = listOf(App, Dashboard, Wallpapers, Albums)
-    }
-}
-
-object AppDestinations {
-    val allDestinations = Screen.allScreens + Graph.allGraphs
 }
