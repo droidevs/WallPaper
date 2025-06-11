@@ -259,4 +259,8 @@
         <item quantity="one">%d item selected</item>
         <item quantity="other">%d items selected</item>
     </plurals>
+
+    <!-- Snackbar Messages -->
+    <string name="album_deleted_successfully">Album deleted successfully</string>
+    <string name="album_delete_failed">Failed to delete album.</string>
 </resources>

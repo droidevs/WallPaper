@@ -92,4 +92,22 @@ class AlbumRepositoryImpl(
                 it.toDomainModel()
             }
         }
+
+    override fun searchAlbums(
+        query: String,
+        page: Int,
+        pageSize: Int
+    ): Flow<Result<List<Album>, DatabaseError>> = flowRunCatchingDatabase {
+            albumDao.searchAlbums(
+                query = query,
+                offset = page * pageSize,
+                limit = pageSize
+            )
+        }
+        .mapResult { albums ->
+            albums.map {
+                it.toDomainModel()
+            }
+        }
+
 }

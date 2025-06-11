@@ -1,4 +1,16 @@
 package io.droidevs.wallpaper.domain.usecases.data.albums
 
-class GetAllAlbumsUseCase {
+import io.droidevs.wallpaper.domain.Album
+import io.droidevs.wallpaper.domain.repository.AlbumRepository
+import io.droidevs.wallpaper.domain.result.Result
+import io.droidevs.wallpaper.domain.result.errors.DatabaseError
+import kotlinx.coroutines.flow.Flow
+
+class GetAllAlbumsUseCase (
+    private val albumRepository: AlbumRepository
+){
+
+    suspend fun invoke() : Flow<Result<List<Album>, DatabaseError>> {
+
+    }
 }

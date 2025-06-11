@@ -20,6 +20,10 @@ sealed class Screen(override val route: String) : Destination {
         val albumId: Long
     ) : Screen("album")
 
+    data class AlbumEdit(
+        val albumId: Long
+    ) : Screen("album_edit")
+
     @Serializable
     object LiveWallpapers : Screen("live_wallpapers")
 

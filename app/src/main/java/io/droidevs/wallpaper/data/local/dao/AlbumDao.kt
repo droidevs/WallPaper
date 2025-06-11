@@ -33,4 +33,12 @@ interface AlbumDao {
 
     @Query("SELECT * FROM albums WHERE genre = :genre ORDER BY title ASC")
     suspend fun getAlbumsByGenre(genre: String): Flow<List<AlbumEntity>>
+
+    @Query("""
+        SELECT * FROM albums
+        JOIN AlbumFts ON albums.id = AlbumFts.rowid
+        WHERE AlbumFts MATCH :query
+        LIMIT :limit OFFSET :offset
+    """)
+    suspend fun searchAlbums(query: String,offset: Int, limit: Int): Flow<List<AlbumEntity>>
 }

@@ -1,0 +1,22 @@
+package io.droidevs.wallpaper.domain.usecases.data.albums
+
+import io.droidevs.wallpaper.dispatchers.AppDispatchers
+import io.droidevs.wallpaper.domain.Album
+import io.droidevs.wallpaper.domain.repository.AlbumRepository
+import io.droidevs.wallpaper.domain.result.Result
+import io.droidevs.wallpaper.domain.result.errors.DatabaseError
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
+
+class GetAlbumsPageUseCase(
+    val albumRepo : AlbumRepository,
+    val dispatchers: AppDispatchers
+) {
+
+    suspend operator fun invoke(page: Int, pageSize: Int) : Flow<Result<List<Album>, DatabaseError>>{
+        return albumRepo.getAlbumsByPage(
+            offset = page * pageSize,
+            limit = pageSize
+        ).flowOn(dispatchers.io)
+    }
+}

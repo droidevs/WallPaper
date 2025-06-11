@@ -25,4 +25,7 @@ sealed interface AlbumListScreenAction {
     data object LoadMoreAlbums : AlbumListScreenAction
 
 
+    data object RefreshAlbums : AlbumListScreenAction
+
+
 }

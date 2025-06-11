@@ -27,4 +27,7 @@ interface AlbumRepository {
     fun getAlbumsByGenre(genre: String): Flow<Result<List<Album>, DatabaseError>>
 
     fun getAlbumsByPage(limit: Int, offset: Int): Flow<Result<List<Album>, DatabaseError>>
+
+
+    fun searchAlbums(query: String, page: Int, pageSize: Int): Flow<Result<List<Album>, DatabaseError>>
 }
