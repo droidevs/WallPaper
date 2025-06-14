@@ -17,4 +17,10 @@ class ClearSearchHistoryUseCase @Inject constructor(
             repository.clearSearchHistory(screenType)
         }
     }
+
+    suspend fun invoke(): Result<Int, DatabaseError> {
+        return withContext(dispatchers.io){
+            repository.clearSearchHistory(SearchScreenType.All)
+        }
+    }
 }

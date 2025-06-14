@@ -9,5 +9,6 @@ enum class SearchScreenType {
     LocalWallpaperList,
     CollectionList,
     FavoritesList,
-    TopicList
+    TopicList,
+    All
 }

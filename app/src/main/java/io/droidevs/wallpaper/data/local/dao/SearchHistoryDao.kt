@@ -28,11 +28,30 @@ interface SearchHistoryDao {
      */
     @Query("""
         SELECT * FROM SearchHistory
-        WHERE screenType = :screenType
+        WHERE screen_type = :screenType
         ORDER BY timestamp DESC
         LIMIT :limit
     """)
     fun getRecentSearches(screenType: SearchScreenType, limit: Int = 10): Flow<List<SearchHistoryEntity>>
+
+
+    @Query("""
+        SELECT * FROM SearchHistory
+        ORDER BY timestamp DESC
+        LIMIT :limit
+    """)
+    fun getRecentSearches(limit: Int = 10): Flow<List<SearchHistoryEntity>>
+
+    @Query("""
+        SELECT * FROM SearchHistory
+        WHERE screen_type = :screenType 
+        and search_query LIKE '%' || :query || '%'
+        ORDER BY timestamp DESC
+        LIMIT :limit
+        OFFSET :offset
+    """)
+    fun getSearches(query: String, screenType: SearchScreenType,offset: Int, limit: Int = 10): Flow<List<SearchHistoryEntity>>
+
 
     /**
      * Deletes a specific search history item by its ID.
@@ -43,6 +62,9 @@ interface SearchHistoryDao {
     /**
      * Clears all search history for a specific screen.
      */
-    @Query("DELETE FROM SearchHistory WHERE screenType = :screenType")
+    @Query("DELETE FROM SearchHistory WHERE screen_type = :screenType")
     suspend fun clearHistoryForScreen(screenType: SearchScreenType) : Int
+
+    @Query("DELETE FROM SearchHistory")
+    suspend fun clearAllHistory() : Int
 }

@@ -3,11 +3,15 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
@@ -27,9 +31,9 @@ fun AppSearchBar(
     modifier: Modifier = Modifier,
     hint: String = "Search...",
     searchQuery: String = "",
-    onSearchQueryChanged: (String) -> Unit = {},
-    onSearch: (String) -> Unit = {},
-    isActive: Boolean = false
+    isActive: Boolean = true,
+    onBackPressed: () -> Unit = {},
+    onAction: (SearchBarAction) -> Unit = {}
 ) {
 
     val alpha by animateFloatAsState(
@@ -50,15 +54,23 @@ fun AppSearchBar(
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier.fillMaxWidth()
         ) {
+            IconButton(onClick = onBackPressed) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = "Search Icon")
             Spacer(modifier = Modifier.width(8.dp))
             BasicTextField(
                 value = searchQuery,
-                onValueChange = { onSearchQueryChanged(it) },
+                onValueChange = { onAction(SearchBarAction.QueryChanged(it)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = { onAction(SearchBarAction.Search) }),
                 modifier = Modifier
                     .weight(1f)
                     .alpha(alpha),
@@ -78,11 +90,20 @@ fun AppSearchBar(
 
             AnimatedVisibility(visible = searchQuery.isNotEmpty()) {
                 IconButton(
-                    onClick = { onSearchQueryChanged("") }
+                    onClick = { onAction(SearchBarAction.Clear) }
                 ) {
                     Icon(imageVector = Icons.Default.Close, contentDescription = "Clear Search")
                 }
             }
         }
     }
+}
+
+
+sealed class SearchBarAction {
+    data class QueryChanged(val query: String) : SearchBarAction()
+    data object Search : SearchBarAction()
+    data object Clear : SearchBarAction()
+    data object Back : SearchBarAction()
+
 }

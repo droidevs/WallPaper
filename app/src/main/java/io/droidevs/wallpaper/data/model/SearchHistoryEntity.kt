@@ -1,6 +1,7 @@
 package io.droidevs.wallpaper.data.model
 
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -15,7 +16,9 @@ import java.time.Instant
 data class SearchHistoryEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    val query: String,
+    @ColumnInfo(name = "search_query")
+    val searchQuery: String,
+    @ColumnInfo(name = "screen_type")
     val screenType: SearchScreenType,
     // Store the timestamp of the last search to sort by recency.
     val timestamp: Instant
