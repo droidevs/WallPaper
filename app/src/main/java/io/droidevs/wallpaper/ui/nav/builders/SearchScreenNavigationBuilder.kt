@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import io.droidevs.bmicalc.ui.utils.ObserveAsEvents
 import io.droidevs.wallpaper.data.model.SearchScreenType
+import io.droidevs.wallpaper.ui.nav.navigators.DefaultNavigator
 import io.droidevs.wallpaper.ui.nav.navigators.Navigator
 import io.droidevs.wallpaper.ui.nav.roots.Screen
 import io.droidevs.wallpaper.ui.screens.SearchScreen
@@ -16,7 +17,7 @@ import io.droidevs.wallpaper.ui.viewmodels.events.SearchScreenEvent
 
 
 fun NavGraphBuilder.searchScreen(
-    navigator: Navigator
+    navigator: DefaultNavigator
 ) {
 
     composable<Screen.Search> { backstackEntry->
@@ -34,16 +35,12 @@ fun NavGraphBuilder.searchScreen(
                     navigator.navigateUp()
                 }
                 is SearchScreenEvent.Search -> {
-                    navigator.navigateTo(
-                        when(event.screenType){
-                            SearchScreenType.AlbumList -> TODO()
-                            SearchScreenType.LocalWallpaperList -> TODO()
-                            SearchScreenType.CollectionList -> TODO()
-                            SearchScreenType.FavoritesList -> TODO()
-                            SearchScreenType.TopicList -> TODO()
-                            SearchScreenType.All -> TODO()
-                        }
-                    )
+                    // Set data to be sent back
+                        navigator.navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("query", event.query)
+
+                        navigator.navigateUp()
                 }
             }
         }

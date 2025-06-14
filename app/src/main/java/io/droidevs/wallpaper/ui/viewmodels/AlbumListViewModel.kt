@@ -163,6 +163,7 @@ class AlbumListViewModel(
             is AlbumListScreenAction.EditAlbum -> TODO()
             AlbumListScreenAction.LoadMoreAlbums -> TODO()
             AlbumListScreenAction.RefreshAlbums -> TODO()
+            AlbumListScreenAction.NavigateBack -> TODO()
         }
     }
 
