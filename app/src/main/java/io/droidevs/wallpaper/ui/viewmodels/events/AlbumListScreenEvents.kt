@@ -10,4 +10,6 @@ sealed interface AlbumListScreenEvent {
 
     data class NavigateToAlbumEdit(val albumId: Long) : AlbumListScreenEvent
 
+    data class NavigateToSearchScreen(val query: String): AlbumListScreenEvent
+
 }

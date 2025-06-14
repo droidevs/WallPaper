@@ -9,6 +9,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,10 +17,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CornerSize
@@ -42,7 +45,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import io.droidevs.wallpaper.domain.model.SearchHistory
 import io.droidevs.wallpaper.ui.commons.AppSearchBar
 import io.droidevs.wallpaper.ui.commons.SearchBarAction
 import io.droidevs.wallpaper.ui.model.SearchHistoryUi
@@ -66,81 +68,108 @@ fun SearchScreen(
         label = "elevation"
     ) { if (it) 8.dp else 0.dp }
 
-    Surface(
-        modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            // Your existing customized search bar (replace with your component)
-            AppSearchBar(
-                searchQuery = state.query,
-                onAction = {
-                    onAction(it.toSearchScreenAction())
-                }
-            )
-            // Animated suggestions container
-            Column (
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                // Search results or empty state would go here
-                if (state.query.isEmpty()) {
-                    SearchHistorySection(
-                        recentSearches = state.recentSuggestions,
-                        onClick = {
-                            onAction(SearchScreenAction.PickSuggestion(it))
-                        }
-                    ) // Your recent searches component
-                } else {
 
-                    AnimatedVisibility(
-                        label = "",
-                        visible = showSuggestions && state.suggestions.isNotEmpty(),
-                        enter = fadeIn() + expandVertically(),
-                        exit = fadeOut() + shrinkVertically()
-                    ) {
-                        Surface(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .shadow(suggestionElevation, shape = MaterialTheme.shapes.medium),
-                            shape = MaterialTheme.shapes.medium,
-                            color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            tonalElevation = 2.dp
+
+    // Semi-transparent scrim that dismisses on tap
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.4f))
+            .clickable {
+                onAction(SearchScreenAction.OnBackPressed)
+            }
+    ) {
+        // Main content container
+        Surface(
+            modifier = modifier
+                .widthIn(min = 200.dp, max = 300.dp)
+                .align(Alignment.Center)
+                .heightIn(max = 600.dp)
+                .padding(16.dp),
+            shape = MaterialTheme.shapes.extraLarge,
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 8.dp,
+            shadowElevation = 8.dp
+        ) {
+            Column {
+                // Your existing customized search bar (replace with your component)
+                AppSearchBar(
+                    searchQuery = state.query,
+                    onAction = {
+                        onAction(it.toSearchScreenAction())
+                    }
+                )
+                // Animated suggestions container
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
+                    // Search results or empty state would go here
+                    if (state.query.isEmpty()) {
+                        SearchHistorySection(
+                            recentSearches = state.recentSuggestions,
+                            onClick = {
+                                onAction(SearchScreenAction.PickSuggestion(it))
+                            }
+                        ) // Your recent searches component
+                    } else {
+
+                        AnimatedVisibility(
+                            label = "",
+                            visible = showSuggestions && state.suggestions.isNotEmpty(),
+                            enter = fadeIn() + expandVertically(),
+                            exit = fadeOut() + shrinkVertically()
                         ) {
-                            LazyColumn(
+                            Surface(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .heightIn(max = 400.dp)
+                                    .padding(horizontal = 16.dp)
+                                    .shadow(
+                                        suggestionElevation,
+                                        shape = MaterialTheme.shapes.medium
+                                    ),
+                                shape = MaterialTheme.shapes.medium,
+                                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                tonalElevation = 2.dp
                             ) {
-                                itemsIndexed(state.suggestions) { index, suggestion ->
-                                    SuggestionItem(
-                                        suggestion = suggestion,
-                                        isLast = index == state.suggestions.lastIndex,
-                                        onClick = {
-                                            onAction(SearchScreenAction.PickSuggestion(suggestion))
-                                            showSuggestions = false
-                                        }
-                                    )
+                                LazyColumn(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .heightIn(max = 400.dp)
+                                ) {
+                                    itemsIndexed(state.suggestions) { index, suggestion ->
+                                        SuggestionItem(
+                                            suggestion = suggestion,
+                                            isLast = index == state.suggestions.lastIndex,
+                                            onClick = {
+                                                onAction(
+                                                    SearchScreenAction.PickSuggestion(
+                                                        suggestion
+                                                    )
+                                                )
+                                                showSuggestions = false
+                                            }
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    // Empty results state
-                    if (showSuggestions && state.suggestions.isEmpty()) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "No suggestions found",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                            )
+                        // Empty results state
+                        if (showSuggestions && state.suggestions.isEmpty()) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "No suggestions found",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                )
+                            }
                         }
                     }
                 }

@@ -1,10 +1,10 @@
 package io.droidevs.wallpaper.ui.viewmodels.actions
 
+import io.droidevs.wallpaper.data.model.SearchScreenType
 import io.droidevs.wallpaper.ui.model.albums.AlbumUi
 
 sealed interface AlbumListScreenAction {
 
-    data class SearchQueryChanged(val query: String): AlbumListScreenAction
     data class SelectAlbum(val album: AlbumUi): AlbumListScreenAction
 
     data class DeselectAlbum(val album: AlbumUi): AlbumListScreenAction
@@ -18,7 +18,9 @@ sealed interface AlbumListScreenAction {
 
     data class SearchActiveChanged(val isActive: Boolean) : AlbumListScreenAction
     data class DeleteAlbum(val album: AlbumUi) : AlbumListScreenAction
-    data object OnSearchAction : AlbumListScreenAction
+    data class OnSearchAction(
+        val query: String,
+    ) : AlbumListScreenAction
 
     data object DeleteAllSelected : AlbumListScreenAction
 

@@ -108,47 +108,61 @@ class AlbumListViewModel(
                 }
             }
             is AlbumListScreenAction.DeselectAlbum -> {
-                _state.update { currentState ->
-                    currentState.copy(
-                        albums = currentState.albums.map { album ->
-                            if (album.id == action.album.id)
-                                album.copy(isSelected = false)
-                            else
-                                album
-                        }
-                    )
+                viewModelScope.launch {
+                    _state.update { currentState ->
+                        currentState.copy(
+                            albums = currentState.albums.map { album ->
+                                if (album.id == action.album.id)
+                                    album.copy(isSelected = false)
+                                else
+                                    album
+                            }
+                        )
+                    }
                 }
             }
             AlbumListScreenAction.DeselectAll -> {
-                _state.update { currentState ->
-                    currentState.copy(
-                        albums = currentState.albums.map { it.copy(isSelected = false) }
-                    )
+                viewModelScope.launch {
+                    _state.update { currentState ->
+                        currentState.copy(
+                            albums = currentState.albums.map { it.copy(isSelected = false) }
+                        )
+                    }
                 }
             }
             is AlbumListScreenAction.SelectAlbum -> {
-                _state.update { currentState ->
-                    currentState.copy(
-                        albums = currentState.albums.map { album ->
-                            if (album.id == action.album.id)
-                                album.copy(isSelected = true)
-                            else
-                                album
-                        }
-                    )
+                viewModelScope.launch {
+                    _state.update { currentState ->
+                        currentState.copy(
+                            albums = currentState.albums.map { album ->
+                                if (album.id == action.album.id)
+                                    album.copy(isSelected = true)
+                                else
+                                    album
+                            }
+                        )
+                    }
                 }
             }
 
-            AlbumListScreenAction.OnSearchAction -> {
+            is AlbumListScreenAction.OnSearchAction -> {
                 val searchQuery = _state.value.searchQuery
                 if (searchQuery.isNotBlank()) {
-                    // Example: Search albums
-                    // Assuming your use case takes a search query
-                    // and returns Result<List<AlbumEntity>>
+                    viewModelScope.launch {
+                        _event.emit(
+                            NavigateToSearchScreen(
+                                query = searchQuery
+                            )
+                        )
+                    }
                 }
             }
             is AlbumListScreenAction.SearchActiveChanged -> TODO()
-            is AlbumListScreenAction.SearchQueryChanged -> TODO()
+            is AlbumListScreenAction.DeleteAlbum -> TODO()
+            AlbumListScreenAction.DeleteAllSelected -> TODO()
+            is AlbumListScreenAction.EditAlbum -> TODO()
+            AlbumListScreenAction.LoadMoreAlbums -> TODO()
+            AlbumListScreenAction.RefreshAlbums -> TODO()
         }
     }
 

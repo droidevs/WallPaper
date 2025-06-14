@@ -1,5 +1,6 @@
 package io.droidevs.wallpaper.ui.nav.roots
 
+import io.droidevs.wallpaper.data.model.SearchScreenType
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -23,6 +24,11 @@ sealed class Screen(override val route: String) : Destination {
     data class AlbumEdit(
         val albumId: Long
     ) : Screen("album_edit")
+
+    data class Search(
+        val query: String,
+        val screenType: SearchScreenType
+    ) : Screen("search")
 
     @Serializable
     object LiveWallpapers : Screen("live_wallpapers")

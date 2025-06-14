@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import io.droidevs.bmicalc.ui.utils.ObserveAsEvents
+import io.droidevs.wallpaper.data.model.SearchScreenType
 import io.droidevs.wallpaper.ui.nav.navigators.Navigator
 import io.droidevs.wallpaper.ui.nav.roots.Screen
 import io.droidevs.wallpaper.ui.screens.SearchScreen
@@ -34,10 +35,14 @@ fun NavGraphBuilder.searchScreen(
                 }
                 is SearchScreenEvent.Search -> {
                     navigator.navigateTo(
-                        Screen.Search(
-                            query = event.query,
-                            screenType = event.screenType
-                        )
+                        when(event.screenType){
+                            SearchScreenType.AlbumList -> TODO()
+                            SearchScreenType.LocalWallpaperList -> TODO()
+                            SearchScreenType.CollectionList -> TODO()
+                            SearchScreenType.FavoritesList -> TODO()
+                            SearchScreenType.TopicList -> TODO()
+                            SearchScreenType.All -> TODO()
+                        }
                     )
                 }
             }
