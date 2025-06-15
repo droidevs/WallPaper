@@ -1,11 +1,11 @@
 package io.droidevs.wallpaper.ui.model.mappers
 
 import io.droidevs.wallpaper.domain.model.Topic
-import io.droidevs.wallpaper.ui.model.TopicUiModel
+import io.droidevs.wallpaper.ui.model.TopicUi
 
 
 // Domain -> UI
-fun Topic.toUiModel() = TopicUiModel(
+fun Topic.toUiModel() = TopicUi(
     id = id,
     title = title,
     description = description,

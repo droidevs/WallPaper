@@ -10,10 +10,10 @@ import kotlin.math.max
 open class SimpleCachingPaginator<Item>(
     initialPage: Int = 1,
     pageSize: Int,
-    private val loadItems: suspend (page: Int, pageSize: Int) -> Result<List<Item>, NetworkError>,
+    private val loadItems: suspend (page: Int, pageSize: Int) -> Result<List<Item>, DataError>,
     private val getItemsFromCache: suspend (page: Int, limit: Int) -> Result<List<Item>, DataError>,
     private val cacheItems: suspend (items: List<Item>) -> Result<List<Long>, DataError>,
-    private val clearCache: suspend () -> Result<Int, DatabaseError>,
+    private val clearCache: suspend () -> Result<Int, DataError>,
     onLoadUpdated: (Boolean) -> Unit,
     private val onError: (error: DataError) -> Unit,
     private val onSuccess: (List<Item>, Boolean) -> Unit

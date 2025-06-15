@@ -15,13 +15,13 @@ import kotlin.math.max
 open class CachingPaginator<Key, Item>(
     private val initialKey: Key,
     private val pageSize: Int,
-    private val loadItems: suspend (key: Key, pageSize: Int) -> Result<List<Item>, NetworkError>,
+    private val loadItems: suspend (key: Key, pageSize: Int) -> Result<List<Item>, DataError>,
     private val getItemsFromCache: suspend (key: Key, limit: Int) -> Result<List<Item>,DataError>,
     private val cacheItems: suspend (items: List<Item>) -> Result<List<Long>,DataError>,
     private val clearCache: suspend () -> Result<Int,DataError>,
     private val onLoadUpdated: (Boolean) -> Unit,
     private val recalculateKey: suspend (datasetSize: Int, pageSize: Int) -> Key,
-    private inline val getNextKey: suspend (key: Key,items: List<Item>) -> Key,
+    private val getNextKey: suspend (key: Key,items: List<Item>) -> Key,
     private val onError: (error: DataError) -> Unit,
     private val onSuccess: (List<Item>, Boolean) -> Unit
 ) : Paginator<Key, Item> {
