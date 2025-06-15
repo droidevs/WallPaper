@@ -2,6 +2,7 @@ package io.droidevs.wallpaper.domain.model
 
 data class Topic(
     val id: String,
+    val slug: String,
     val title: String,
     val description: String?,
     val publishedAt: Long,

@@ -3,6 +3,7 @@ package io.droidevs.wallpaper.data.network.dtos
 
 import io.droidevs.wallpaper.data.network.model.PreviewPhoto
 import io.droidevs.wallpaper.data.network.model.TopicCover
+import io.droidevs.wallpaper.domain.model.Topic
 
 import kotlinx.serialization.SerialName
 import java.util.*
@@ -26,6 +27,23 @@ data class TopicDto(
     @SerialName("cover_photo") val coverPhoto: TopicCover,
     @SerialName("preview_photos") val previewPhotos: List<PreviewPhoto>
 )
+
+
+//todo: convert the dates correctly
+fun TopicDto.toDomain(): Topic{
+    return Topic(
+        id = id,
+        slug = slug,
+        title = title,
+        description = description,
+        publishedAt = publishedAt.toLong(),
+        updatedAt = updatedAt.toLong(),
+        startsAt = startsAt?.toLong(),
+        endsAt = endsAt?.toLong(),
+        totalPhotos = totalPhotos,
+        coverPhotoUrl = coverPhoto.urls.regular,
+    )
+}
 
 
 

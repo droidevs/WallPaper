@@ -2,7 +2,9 @@ package io.droidevs.wallpaper.data.network.topic
 
 import io.droidevs.wallpaper.data.network.ApiClient
 import io.droidevs.wallpaper.data.network.dtos.TopicDto
-import io.droidevs.wallpaper.data.network.result.ApiResult
+import io.droidevs.wallpaper.domain.model.Topic
+import io.droidevs.wallpaper.domain.result.Result
+import io.droidevs.wallpaper.domain.result.errors.NetworkError
 import io.ktor.client.HttpClient
 
 class TopicApiImpl(private val client: HttpClient) : TopicApi,
@@ -13,7 +15,7 @@ class TopicApiImpl(private val client: HttpClient) : TopicApi,
         page: Int?,
         perPage: Int?,
         orderBy: String?
-    ): ApiResult<List<TopicDto>> {
+    ): Result<List<TopicDto>, NetworkError> {
         return get<List<TopicDto>>(
             path = "topics",
             queryParams = mapOf(
@@ -26,7 +28,7 @@ class TopicApiImpl(private val client: HttpClient) : TopicApi,
         )
     }
 
-    override suspend fun getTopic(idOrSlug: String): ApiResult<TopicDto> {
+    override suspend fun getTopic(idOrSlug: String): Result<TopicDto, NetworkError> {
         return get<TopicDto>(
             path = "topics/$idOrSlug"
         )

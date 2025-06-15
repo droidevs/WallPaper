@@ -7,6 +7,21 @@ import io.droidevs.wallpaper.domain.model.Topic
 fun TopicEntity.toDomain() = Topic(
     id = remote,
     title = title,
+    slug = slug,
+    description = description,
+    publishedAt = publishedAt,
+    updatedAt = updatedAt,
+    startsAt = startsAt,
+    endsAt = endsAt,
+    totalPhotos = totalPhotos,
+    coverPhotoUrl = coverPhotoUrl
+)
+
+
+fun Topic.toEntity() = TopicEntity(
+    remote = id,
+    slug = slug,
+    title = title,
     description = description,
     publishedAt = publishedAt,
     updatedAt = updatedAt,
