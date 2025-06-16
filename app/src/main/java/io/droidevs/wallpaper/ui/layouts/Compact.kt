@@ -26,8 +26,8 @@ import io.droidevs.wallpaper.ui.window.LocalWindow
 fun CompactLayoutWithScaffold(
     allowScroll: Boolean = true,
     applyPadding: Boolean = true,
-    topAppBar: @Composable () -> Unit,
-    floatingActionButton: @Composable () -> Unit,
+    topAppBar: @Composable () -> Unit = {},
+    floatingActionButton: @Composable () -> Unit = {},
     isStandalone: Boolean = true, // Added parameter to check standalone mode
     mainContent: @Composable () -> Unit,
 ) {
