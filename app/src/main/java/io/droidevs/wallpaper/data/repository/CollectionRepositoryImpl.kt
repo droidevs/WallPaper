@@ -6,6 +6,7 @@ import io.droidevs.wallpaper.data.local.CollectionEntity
 import io.droidevs.wallpaper.data.local.exceptions.runCatchingDatabaseResult
 import io.droidevs.wallpaper.data.local.dao.CollectionDao
 import io.droidevs.wallpaper.data.local.exceptions.DatabaseException
+import io.droidevs.wallpaper.data.local.exceptions.flowRunCatchingDatabase
 import io.droidevs.wallpaper.data.mappers.toDomain
 import io.droidevs.wallpaper.data.network.collection.CollectionApi
 import io.droidevs.wallpaper.dispatchers.AppDispatchers
@@ -18,6 +19,7 @@ import io.droidevs.wallpaper.domain.result.Result
 import io.droidevs.wallpaper.domain.result.errors.DataError
 import io.droidevs.wallpaper.domain.result.map
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -48,6 +50,20 @@ class CollectionRepositoryImpl @Inject constructor(
         return flow<Result<Collection?, DataError>> {
             collectionApi.getCollection(id)
         }.flowOn(dispatcher.io)
+    }
+
+    override fun getCollections(
+        page: Int,
+        pageSize: Int
+    ): Flow<Result<List<Collection>, DataError>> = flowRunCatchingDatabase {
+        collectionDao.getCollectionsPaged(
+            offset = page * pageSize,
+            limit = pageSize
+        ).map { collections ->
+            collections.map {
+                it.toDomain()
+            }
+        }
     }
 
     override fun getOnlineCollections(

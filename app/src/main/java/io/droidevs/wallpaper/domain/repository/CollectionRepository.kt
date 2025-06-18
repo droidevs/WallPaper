@@ -14,6 +14,12 @@ interface CollectionRepository {
     // Query operations
     fun getCollectionById(id: Int): Flow<Result<Collection?, DataError>>
 
+
+    fun getCollections(
+        page: Int,
+        pageSize: Int,
+    ) : Flow<Result<List<Collection>, DataError>>
+
     fun getOnlineCollections(
         searchQuery: String? = null,
         page: Int,
