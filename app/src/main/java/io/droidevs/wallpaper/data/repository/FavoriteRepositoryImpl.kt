@@ -20,15 +20,15 @@ class FavoritesRepositoryImpl @Inject constructor(
     private val dao: FavoritesDao
 ) : FavoritesRepository {
 
-    override suspend fun addFavorite(itemId: Long, type: FavoriteType): Result<Boolean, DataError> =
+    override suspend fun addFavorite(itemId: String, type: FavoriteType): Result<Boolean, DataError> =
         runCatchingDatabaseResult {
-            val compositeId = FavoriteEntity.createId(type, itemId)
-            if (dao.isFavorited(compositeId, type).first()) {
+            //val compositeId = FavoriteEntity.createId(type, itemId)
+            if (dao.isFavorited(itemId.toString(), type).first()) {
                 false
             } else {
                 val index = dao.insert(
                     FavoriteEntity(
-                        itemId = compositeId,
+                        itemId = itemId.toString(),
                         type = type
                     )
                 )
@@ -36,20 +36,19 @@ class FavoritesRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun removeFavorite(itemId: Long, type: FavoriteType): Result<Boolean, DataError> =
+    override suspend fun removeFavorite(itemId: String, type: FavoriteType): Result<Boolean, DataError> =
         runCatchingDatabaseResult {
-            val compositeId = FavoriteEntity.createId(type, itemId)
-            if (dao.isFavorited(compositeId, type).first()) {
-                dao.deleteById(compositeId, type)
+            if (dao.isFavorited(itemId, type).first()) {
+                dao.deleteById(itemId, type)
                 true
             } else {
                 false
             }
         }
 
-    override suspend fun isFavorited(itemId: Long, type: FavoriteType): Flow<Result<Boolean, DataError>> =
+    override suspend fun isFavorited(itemId: String, type: FavoriteType): Flow<Result<Boolean, DataError>> =
         flowRunCatchingDatabase {
-            dao.isFavorited(FavoriteEntity.createId(type, itemId), type)
+            dao.isFavorited(itemId, type)
         }
 
     override suspend fun getFavoritesByType(

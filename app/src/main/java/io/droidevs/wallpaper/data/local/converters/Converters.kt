@@ -26,7 +26,7 @@ class Converters {
     }
 
     @TypeConverter
-    fun fromFavoriteType(type: FavoriteType): String = type.name
+    fun fromFavoriteType(type: FavoriteType): String = type.typeName
 
     @TypeConverter
     fun toFavoriteType(name: String): FavoriteType = FavoriteType.fromString(name)
