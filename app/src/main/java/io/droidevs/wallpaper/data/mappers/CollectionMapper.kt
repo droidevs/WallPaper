@@ -4,8 +4,6 @@ import io.droidevs.wallpaper.data.local.CollectionEntity
 import io.droidevs.wallpaper.data.network.dtos.CollectionDto
 import io.droidevs.wallpaper.domain.model.Collection
 import io.droidevs.wallpaper.ui.ex.IsoToLong
-import io.droidevs.wallpaper.ui.theme.titleFamily
-import java.time.OffsetDateTime
 
 
 fun CollectionEntity.toDomain(): Collection{
@@ -18,7 +16,8 @@ fun CollectionEntity.toDomain(): Collection{
         coverWidth = coverWidth,
         coverHeight = coverHeight,
         publishTime = publishTime,
-        updateTime = updateTime
+        updateTime = updateTime,
+        collectionUrl = collectionUrl
     )
 }
 
@@ -33,7 +32,8 @@ fun CollectionDto.toEntity(): CollectionEntity {
         coverWidth = cover.width,
         coverHeight = cover.height,
         publishTime = IsoToLong(publishedAt),
-        updateTime = IsoToLong(updatedAt)
+        updateTime = IsoToLong(updatedAt),
+        collectionUrl = links.full
     )
 }
 
@@ -43,10 +43,11 @@ fun CollectionDto.toDomain(): Collection {
         title = name,
         description = description,
         totalPhotos = totalPhotos,
+        publishTime = IsoToLong(publishedAt),
+        updateTime = IsoToLong(updatedAt),
         coverUrl = cover.links.full,
         coverWidth = cover.width,
         coverHeight = cover.height,
-        publishTime = IsoToLong(publishedAt),
-        updateTime = IsoToLong(updatedAt)
+        collectionUrl = links.full
     )
 }

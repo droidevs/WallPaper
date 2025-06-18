@@ -7,6 +7,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CollectionUrls(
 
-    @SerialName("full")
+    @SerialName("html")
     val full: String,
 )
