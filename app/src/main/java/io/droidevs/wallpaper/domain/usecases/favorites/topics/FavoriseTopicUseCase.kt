@@ -11,7 +11,7 @@ class FavoriseTopicUseCase(
     private val repository: FavoritesRepository,
     private val dispatchers: AppDispatchers
 ) {
-    suspend operator fun invoke(topicId: Long): Result<Boolean, DataError> =
+    suspend operator fun invoke(topicId: String): Result<Boolean, DataError> =
         withContext(dispatchers.io) {
             repository.addFavorite(topicId, FavoriteType.Topic)
         }
