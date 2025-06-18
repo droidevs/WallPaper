@@ -3,6 +3,7 @@ package io.droidevs.wallpaper.data.local.converters
 
 import androidx.room.TypeConverter
 import io.droidevs.wallpaper.data.model.SearchScreenType
+import io.droidevs.wallpaper.domain.model.FavoriteType
 import java.time.Instant
 
 class Converters {
@@ -23,4 +24,10 @@ class Converters {
     fun toTimestamp(instant: Instant?): Long? {
         return instant?.toEpochMilli()
     }
+
+    @TypeConverter
+    fun fromFavoriteType(type: FavoriteType): String = type.name
+
+    @TypeConverter
+    fun toFavoriteType(name: String): FavoriteType = FavoriteType.fromString(name)
 }

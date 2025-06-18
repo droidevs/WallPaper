@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import io.droidevs.wallpaper.data.local.converters.Converters
 import io.droidevs.wallpaper.data.local.dao.AlbumDao
+import io.droidevs.wallpaper.data.local.dao.FavoritesDao
 import io.droidevs.wallpaper.data.local.dao.LocalWallpaperDao
 import io.droidevs.wallpaper.data.local.dao.SearchHistoryDao
 import io.droidevs.wallpaper.data.model.AlbumEntity
@@ -14,13 +15,20 @@ import io.droidevs.wallpaper.data.model.LocalWallpaperEntity
 import io.droidevs.wallpaper.data.model.SearchHistoryEntity
 
 @Database(entities =
-    [AlbumEntity::class, SearchHistoryEntity::class], version = 1)
+    [
+        AlbumEntity::class,
+        SearchHistoryEntity::class,
+        FavoriteEntity::class,
+        //LocalWallpaperEntity::class
+    ], version = 1)
 
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun albumDao(): AlbumDao
 
     abstract fun searchHistoryDao(): SearchHistoryDao
+
+    abstract fun favoritesDao(): FavoritesDao
 
     companion object {
         private const val DATABASE_NAME = "wallpapers"

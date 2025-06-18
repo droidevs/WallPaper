@@ -30,6 +30,9 @@ data class CollectionEntity(
     @ColumnInfo(name = "update_time")
     val updateTime: Long,
 
+    @ColumnInfo(name = "collection_url")
+    val collectionUrl: String = "",
+
     @ColumnInfo(name = "cover_url")
     val coverUrl: String,
 
