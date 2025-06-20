@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.droidevs.wallpaper.ui.commons.FilterRowLayout
 import io.droidevs.wallpaper.ui.model.FilterCategory
+import io.droidevs.wallpaper.ui.model.FilterItem
 
 /**
  * The main content for the filter bottom sheet.
@@ -23,9 +24,9 @@ import io.droidevs.wallpaper.ui.model.FilterCategory
 @Composable
 fun FilterContent(
     allCategories: List<FilterCategory>,
-    initialSelections: Map<String, Int>,
-    defaultSelections: Map<String, Int>,
-    onApplyClicked: (Map<String, Int>) -> Unit,
+    initialSelections: Map<FilterCategory, FilterItem>,
+    defaultSelections: Map<FilterCategory, FilterItem>,
+    onApplyClicked: (Map<FilterCategory, FilterItem>) -> Unit,
     onCancelClicked: () -> Unit
 ) {
     // THIS IS THE KEY: A temporary state that the user modifies.
@@ -50,10 +51,10 @@ fun FilterContent(
                 )
                 FilterRowLayout(
                     items = category.filters,
-                    selectedFilterIndex = temporarySelections[category.title] ?: -1,
+                    selectedFilterIndex = temporarySelections[category]?.id ?: -1,
                     onFilterSelected = { selectedItem ->
                         // Update the temporary state map when an item is clicked
-                        temporarySelections = temporarySelections + (category.title to selectedItem.id)
+                        temporarySelections = temporarySelections + (category to selectedItem)
                     }
                 )
             }

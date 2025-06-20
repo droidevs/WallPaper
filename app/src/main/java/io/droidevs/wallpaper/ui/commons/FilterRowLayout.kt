@@ -4,6 +4,7 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 
 import androidx.compose.runtime.rememberCoroutineScope
 import io.droidevs.wallpaper.ui.model.FilterItem
@@ -17,7 +18,6 @@ fun FilterRowLayout(
     onFilterSelected: (FilterItem) -> Unit,
     coroutineScope: CoroutineScope = rememberCoroutineScope()
 ){
-
     ScrollableTabRow(
         selectedTabIndex = selectedFilterIndex,
         indicator = {
