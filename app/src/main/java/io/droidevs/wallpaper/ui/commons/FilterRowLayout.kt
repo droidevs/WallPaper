@@ -6,17 +6,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.graphics.vector.ImageVector
+import io.droidevs.wallpaper.ui.model.FilterItem
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 
 @Composable
 fun FilterRowLayout(
-    filterCount: Int,
+    items: List<FilterItem>,
     selectedFilterIndex: Int,
     onFilterSelected: (FilterItem) -> Unit,
-    filterItem: (Int) -> FilterItem,
     coroutineScope: CoroutineScope = rememberCoroutineScope()
 ){
 
@@ -26,23 +24,16 @@ fun FilterRowLayout(
             TabRowIndicator(it,selectedFilterIndex)
         }
     ) {
-        (1..filterCount).forEach { index ->
-            var tab = filterItem(index)
+        items.forEachIndexed { index, filter->
             Tab(
                 selected = selectedFilterIndex == index,
                 onClick = {
-                    onFilterSelected(tab)
+                    onFilterSelected(filter)
                 },
-                text = { Text(tab.title) }
+                text = { Text(filter.title) }
             )
         }
     }
 }
 
 
-
-data class FilterItem(
-    val id : Int,
-    val title: String,
-    val icon: ImageVector
-)

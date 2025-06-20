@@ -15,8 +15,7 @@ import androidx.compose.ui.unit.dp
 import io.droidevs.wallpaper.ui.commons.ModalSideSheet
 import io.droidevs.wallpaper.ui.commons.SideSheetState
 import io.droidevs.wallpaper.ui.commons.rememberSideSheetState
-import io.droidevs.wallpaper.ui.system.System
-import io.droidevs.wallpaper.ui.system.window
+import io.droidevs.wallpaper.ui.window.LocalWindow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,7 +30,7 @@ fun AdaptiveBottomSheet(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val layoutMode  = System.window.state.value.layout.appLayoutMode
+    val layoutMode  = LocalWindow.current.layoutMode
     if (layoutMode.isSplitScreen()) {
         ModalSideSheet(
             modifier = modifier.padding(
@@ -100,7 +99,7 @@ fun rememberAdaptiveBottomSheetState(
     bottomSheetState: SheetState = rememberModalBottomSheetState(),
     sideSheetState: SideSheetState = rememberSideSheetState(),
 ): AdaptiveBottomSheetState {
-    val layoutMode  = System.window.state.value.layout.appLayoutMode
+    val layoutMode  = LocalWindow.current.layoutMode
     return remember {
         AdaptiveBottomSheetState(
             isExpanded = layoutMode.isSplitScreen(),
