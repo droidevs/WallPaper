@@ -16,6 +16,8 @@ sealed class Screen(override val route: String) : Destination {
     @Serializable
     object Albums : Screen("albums")
 
+    object CollectionList : Screen("collection_list")
+
     @Serializable
     data class Album(
         val albumId: Long

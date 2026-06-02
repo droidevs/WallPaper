@@ -37,7 +37,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -64,8 +63,8 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import io.droidevs.wallpaper.coil.profile.ProfileImageRequest
-import io.droidevs.wallpaper.domain.Profile
 import io.droidevs.wallpaper.ui.model.MenuItem
+import io.droidevs.wallpaper.ui.commons.progress.AnimatedCircularProgress
 
 import kotlinx.coroutines.launch
 

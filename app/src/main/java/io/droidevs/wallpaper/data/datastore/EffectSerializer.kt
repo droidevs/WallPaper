@@ -2,8 +2,7 @@ package io.droidevs.wallpaper.data.datastore
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
-import io.droidevs.wallpaper.models.Effect
-import io.droidevs.wallpaper.models.WallpaperEffects
+import io.droidevs.wallpaper.domain.model.WallpaperEffects
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.InputStream

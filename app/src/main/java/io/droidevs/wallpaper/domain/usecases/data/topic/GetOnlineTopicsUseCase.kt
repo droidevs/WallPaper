@@ -16,7 +16,7 @@ class GetOnlineTopicsUseCase(
     private val dispatchers: AppDispatchers
 ) {
 
-    fun invoke(
+    operator fun invoke(
         page: Int,
         pageSize: Int,
         order: TopicOrderBy,

@@ -5,27 +5,27 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.droidevs.wallpaper.domain.Wallpaper
-import io.droidevs.wallpaper.infrastructure.mappers.toDomainModel
-import io.droidevs.wallpaper.infrastructure.pager.WallpapersPaginator
-import io.droidevs.wallpaper.infrastructure.repository.WallpaperRepository
+import io.droidevs.wallpaper.domain.LocalWallpaper
+import io.droidevs.wallpaper.data.mappers.toDomainModel
+import io.droidevs.wallpaper.data.pager.impl.LocalWallpapersPaginator
+import io.droidevs.wallpaper.data.repository.LocalWallpaperRepository
 import io.droidevs.wallpaper.ui.viewmodels.event.SortEvent
-import io.droidevs.wallpaper.ui.viewmodels.state.LoadState
+import io.droidevs.wallpaper.ui.viewmodels.state.LocalWallpaperListScreenState
 import io.droidevs.wallpaper.ui.viewmodels.state.LoadingMode
 import io.droidevs.wallpaper.ui.viewmodels.state.SelectState
 import kotlinx.coroutines.launch
 
 class AlbumViewModel (
-    val repository : WallpaperRepository
+    val repository : LocalWallpaperRepository
 ) : ViewModel() {
 
     private var isRefreshing = false
     private var isLoadingMore = false
 
-    var state by mutableStateOf(LoadState())
+    var state by mutableStateOf(LocalWallpaperListScreenState())
     var selectState by mutableStateOf(SelectState())
 
-    val paginator = WallpapersPaginator(
+    val paginator = LocalWallpapersPaginator(
         initialKey = state.page,
         onLoadUpdated = {
             if(it){
@@ -87,13 +87,13 @@ class AlbumViewModel (
         paginator.reset()
     }
 
-    fun setSelectedWallpapers(selectedWallpapers: ArrayList<Wallpaper>) {
+    fun setSelectedWallpapers(selectedWallpapers: ArrayList<LocalWallpaper>) {
         selectedWallpapers.forEach {
             select(it)
         }
     }
 
-    fun select(wallpaper: Wallpaper){
+    fun select(wallpaper: LocalWallpaper){
         select(wallpaper.id)
     }
     fun select(wallpaperId : String){
@@ -101,7 +101,7 @@ class AlbumViewModel (
         selectState = selectState.copy(selectedCount = selectState.selectedCount + 1)
     }
 
-    fun deselect(wallpaper: Wallpaper){
+    fun deselect(wallpaper: LocalWallpaper){
         deselect(wallpaper.id)
     }
 
@@ -118,7 +118,7 @@ class AlbumViewModel (
         selectState.selectedItems.clear()
     }
 
-    fun selectFromLastToCurrent(wallpaper: Wallpaper) {
+    fun selectFromLastToCurrent(wallpaper: LocalWallpaper) {
         val wallpapers = state.wallpapers
         val selectedWallpapers = selectState.selectedItems
         val currentIndex = wallpapers.indexOf(wallpaper)

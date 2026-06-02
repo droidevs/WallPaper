@@ -263,4 +263,12 @@
     <!-- Snackbar Messages -->
     <string name="album_deleted_successfully">Album deleted successfully</string>
     <string name="album_delete_failed">Failed to delete album.</string>
+
+    <string name="home_screen_wallpaper_channel">Home screen wallpaper</string>
+    <string name="home_screen_channel_description">Notifications for home screen wallpaper changes</string>
+    <string name="lock_screen_wallpaper_channel">Lock screen wallpaper</string>
+    <string name="lock_screen_channel_description">Notifications for lock screen wallpaper changes</string>
+    <string name="error_channel">Errors</string>
+    <string name="error_channel_description">Notifications when wallpaper service fails</string>
+    <string name="wallpaper_service_crashed">Wallpaper service crashed</string>
 </resources>

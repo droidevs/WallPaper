@@ -25,12 +25,14 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.droidevs.bmicalc.ui.layouts.SomethingWrongLayout
+import io.droidevs.wallpaper.ui.commons.AppHorizontalPager
 import io.droidevs.wallpaper.ui.commons.TopicCard
 import io.droidevs.wallpaper.ui.commons.TrackableAdaptiveCells
 import io.droidevs.wallpaper.ui.layouts.CompactLayoutWithScaffold
@@ -118,6 +120,14 @@ fun TopicListFeed(
                 errorMessage = "Something went wrong"
             )
         } else {
+            AppHorizontalPager(
+                pageCount = 2,
+                coroutineScope = rememberCoroutineScope()
+            ){ page ->
+                when (page) {
+
+                }
+            }
             val refreshState = rememberPullToRefreshState()
             PullToRefreshBox(
                 modifier = Modifier.fillMaxSize(),

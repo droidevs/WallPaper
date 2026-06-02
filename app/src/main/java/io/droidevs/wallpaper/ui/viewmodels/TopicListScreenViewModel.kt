@@ -128,7 +128,7 @@ class TopicListScreenViewModel @Inject constructor(
 
     private fun onTopicClick(topic: TopicUi) {
         viewModelScope.launch {
-            _events.emit(TopicListScreenEvents.NavigateToTopicScreen(topic.id))
+            _events.emit(TopicListScreenEvents.NavigateToTopicScreen(topic))
         }
     }
 }

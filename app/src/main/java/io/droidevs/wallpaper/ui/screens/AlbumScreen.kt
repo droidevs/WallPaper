@@ -2,18 +2,15 @@ package io.droidevs.wallpaper.ui.screens
 
 import android.content.Intent
 import android.net.Uri
-import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -25,34 +22,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import io.droidevs.wallpaper.domain.Album
-import io.droidevs.wallpaper.domain.Wallpaper
-import io.droidevs.wallpaper.ui.commons.AddWallpapersActionFlow
+import io.droidevs.wallpaper.domain.LocalWallpaper
 import io.droidevs.wallpaper.ui.commons.AppFloatingActionButton
 import io.droidevs.wallpaper.ui.commons.BackAppBar
-import io.droidevs.wallpaper.ui.commons.ProgressIndicator
+import io.droidevs.wallpaper.ui.commons.progress.ProgressIndicator
 import io.droidevs.wallpaper.ui.commons.SelectionMenu
 import io.droidevs.wallpaper.ui.commons.WallpaperStaggeredGrid
 import io.droidevs.wallpaper.ui.dialogs.PleaseWaitDialog
-import io.droidevs.wallpaper.ui.dialogs.auto_wallpaper.ScreenSelectionDialog
 import io.droidevs.wallpaper.ui.dialogs.settings.SureDialog
 import io.droidevs.wallpaper.ui.layouts.AppLayoutMode
 import io.droidevs.wallpaper.ui.layouts.CompactLayoutWithScaffold
 import io.droidevs.wallpaper.ui.layouts.DoubleLayoutWithScaffold
 import io.droidevs.wallpaper.ui.model.AppBarMenuItem
-import io.droidevs.wallpaper.ui.nav.Graph
 import io.droidevs.wallpaper.ui.nav.MultiNavigationAppState
-import io.droidevs.wallpaper.ui.nav.Screen
+import io.droidevs.wallpaper.ui.nav.roots.Screen
 import io.droidevs.wallpaper.ui.nav.rememberMultiNavigationAppState
-import io.droidevs.wallpaper.ui.system.System
 import io.droidevs.wallpaper.ui.system.window
 import io.droidevs.wallpaper.ui.viewmodels.event.LoadEvent
 import io.droidevs.wallpaper.ui.viewmodels.event.SelectEvent
 import io.droidevs.wallpaper.ui.viewmodels.event.SortEvent
-import io.droidevs.wallpaper.ui.viewmodels.state.LoadState
+import io.droidevs.wallpaper.ui.viewmodels.state.LocalWallpaperListScreenState
 import io.droidevs.wallpaper.ui.viewmodels.state.LoadingMode
 import io.droidevs.wallpaper.ui.viewmodels.state.SelectState
 import kotlinx.coroutines.Dispatchers
@@ -66,7 +58,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.material.icons.filled.*
 import androidx.navigation.compose.NavHost
-import io.droidevs.wallpaper.ui.nav.wallpaperNavGraph
 import io.droidevs.wallpaper.ui.nav.wallpaperScreen
 import io.droidevs.wallpaper.ui.system.window.AppLayoutInfo
 import io.droidevs.wallpaper.ui.viewmodels.event.DeleteEvent
@@ -76,9 +67,9 @@ import io.droidevs.wallpaper.ui.viewmodels.event.DeleteEvent
 fun AlbumScreen(
     navController: NavController,
     album : Album?,
-    state : LoadState,
+    state : LocalWallpaperListScreenState,
     selectState: SelectState,
-    onClick : (wallpaper : Wallpaper) -> Unit,
+    onClick : (wallpaper : LocalWallpaper) -> Unit,
     onLoadEvent : (LoadEvent) -> Unit,
     onSelectEvent: (SelectEvent) -> Unit,
     onSortEvent: (SortEvent) -> Unit,
@@ -182,9 +173,9 @@ fun AlbumScreen(
 fun useCompactLayout(
     album: Album,
     gridState: LazyStaggeredGridState,
-    state: LoadState,
+    state: LocalWallpaperListScreenState,
     selectState: SelectState,
-    onClick: (wallpaper: Wallpaper) -> Unit,
+    onClick: (wallpaper: LocalWallpaper) -> Unit,
     onLoadEvent: (LoadEvent) -> Unit,
     onBack: () -> Unit,
     onDelete: (DeleteEvent) -> Unit,
@@ -213,7 +204,7 @@ fun useCompactLayout(
             Feed (
                 gridState = gridState,
                 onClick = onClick,
-                loadState = state,
+                localWallpaperListScreenState = state,
                 selectState = selectState,
                 onRefresh = { onLoadEvent.invoke(LoadEvent.Refresh) },
                 onLoadMore = { onLoadEvent.invoke(LoadEvent.LoadMore) },
@@ -235,9 +226,9 @@ fun useDoubleLayout(
     album: Album,
     albumNavigationState: MultiNavigationAppState,
     gridState: LazyStaggeredGridState,
-    state: LoadState,
+    state: LocalWallpaperListScreenState,
     selectState: SelectState,
-    onClick: (wallpaper: Wallpaper) -> Unit,
+    onClick: (wallpaper: LocalWallpaper) -> Unit,
     onLoadEvent: (LoadEvent) -> Unit,
     onBack: () -> Unit,
     onDelete: (DeleteEvent) -> Unit,
@@ -263,7 +254,7 @@ fun useDoubleLayout(
             Feed (
                 gridState = gridState,
                 onClick = onClick,
-                loadState = state,
+                localWallpaperListScreenState = state,
                 selectState = selectState,
                 onRefresh = { onLoadEvent.invoke(LoadEvent.Refresh) },
                 onLoadMore = { onLoadEvent.invoke(LoadEvent.LoadMore) },
@@ -292,12 +283,12 @@ fun useDoubleLayout(
 @Composable
 private fun Feed(
     gridState: LazyStaggeredGridState,
-    loadState: LoadState,
+    localWallpaperListScreenState: LocalWallpaperListScreenState,
     selectState: SelectState,
     onRefresh : () -> Unit,
     onLoadMore : () -> Unit,
     onSelect : (wallpaperId : String, isSelected : Boolean) -> Unit,
-    onClick: (wallpaper: Wallpaper) -> Unit,
+    onClick: (wallpaper: LocalWallpaper) -> Unit,
     onDelete : (wallpapersId : List<String>) -> Unit
 ){
     val refreshState = rememberPullToRefreshState()
@@ -328,7 +319,7 @@ private fun Feed(
     PullToRefreshBox(
         modifier = Modifier.fillMaxSize(),
         state = refreshState,
-        isRefreshing = loadState.mode == LoadingMode.Refresh,
+        isRefreshing = localWallpaperListScreenState.mode == LoadingMode.Refresh,
         onRefresh = {
             if (!selectionMode.value) {
                 onRefresh()
@@ -342,9 +333,9 @@ private fun Feed(
             modifier = Modifier
                 .testTag("home:feed"),
             state = gridState,
-            loadingState = loadState,
+            loadingState = localWallpaperListScreenState,
             selectState = selectState,
-            wallpapers = loadState.wallpapers as ArrayList<Wallpaper>,
+            wallpapers = localWallpaperListScreenState.wallpapers as ArrayList<LocalWallpaper>,
             header = {
 
             },
