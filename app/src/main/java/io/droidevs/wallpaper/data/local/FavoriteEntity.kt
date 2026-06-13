@@ -28,6 +28,6 @@ data class FavoriteEntity(
     val favoritedAt: Long = System.currentTimeMillis()
 ) {
     companion object {
-        fun createId(type: FavoriteType, id: Long) = "${type.name.lowercase()}_$id"
+        fun createId(type: FavoriteType, id: Long) = "${type.typeName.lowercase()}_$id"
     }
 }

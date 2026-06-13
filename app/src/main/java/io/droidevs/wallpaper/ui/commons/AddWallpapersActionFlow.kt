@@ -165,10 +165,10 @@ fun AddWallpapersActionFlowPreview(
 
 // Sample data for albums
 val sampleAlbums = listOf(
-    Album( 1, title = "Landscapes", genre = "Nature", artist = "", releaseYear = 2010),
-    Album( 2, title = "Abstract", genre = "Art", artist = "", releaseYear = 2011),
-    Album( 3, title = "Animals", genre = "Nature", artist = "", releaseYear = 2012),
-    Album(4, title = "Cityscapes", genre = "Nature", artist = "", releaseYear = 2013)
+    Album( 1, title = "Landscapes", description = "Nature landscapes"),
+    Album( 2, title = "Abstract", description = "Abstract art"),
+    Album( 3, title = "Animals", description = "Animal pictures"),
+    Album(4, title = "Cityscapes", description = "City pictures")
 )
 
 // Class to hold state for Preview

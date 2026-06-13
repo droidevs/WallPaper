@@ -123,6 +123,7 @@ class CollectionListViewModel(
         }
     )
 
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     private val favoredPaginator = SimpleDefaultPaginator<Collection>(
         initialKey = state.value.page,
         onLoadUpdated = {

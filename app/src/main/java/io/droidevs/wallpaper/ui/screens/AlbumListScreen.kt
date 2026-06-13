@@ -24,7 +24,7 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.room.util.query
-import io.droidevs.bmicalc.ui.layouts.SomethingWrongLayout
+import io.droidevs.wallpaper.ui.layouts.SomethingWrongLayout
 import io.droidevs.wallpaper.data.model.AlbumEntity
 import io.droidevs.wallpaper.domain.pager.PaginationState
 import io.droidevs.wallpaper.ui.bottomsheet.AdaptiveBottomSheet

@@ -1,8 +1,10 @@
 package io.droidevs.wallpaper.ui.viewmodels.events
 
+import io.droidevs.wallpaper.ui.model.TopicUi
+import io.droidevs.wallpaper.ui.model.collections.CollectionUi
+
 // Events
 sealed class TopicListScreenEvents {
-    data class NavigateToTopicScreen(val topicId: String) : TopicListScreenEvents()
+    data class NavigateToTopicScreen(val collection: TopicUi) : TopicListScreenEvents()
 
-    data class ShowError(val message: String) : TopicListScreenEvents()
 }

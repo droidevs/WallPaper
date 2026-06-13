@@ -60,6 +60,7 @@ fun <D, E : RootError> Flow<D>.asResultFlow(
     }
 }
 
+@JvmName("asResultFlowResult")
 fun <D, E : RootError> Flow<Result<D, E>>.asResultFlow(
     errorTransform: (Throwable) -> E,
     retries: Int = 2,

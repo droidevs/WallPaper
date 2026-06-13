@@ -5,7 +5,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import io.droidevs.bmicalc.ui.utils.ObserveAsEvents
+import io.droidevs.wallpaper.ui.utils.ObserveAsEvents
 import io.droidevs.wallpaper.data.model.SearchScreenType
 import io.droidevs.wallpaper.ui.nav.navigators.DefaultNavigator
 import io.droidevs.wallpaper.ui.nav.navigators.Navigator

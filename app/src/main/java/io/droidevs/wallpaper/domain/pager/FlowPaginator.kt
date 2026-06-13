@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 
 open class FlowPaginator<Key, Item>(
     private val initialKey: Key,
-    private inline val onRequest: suspend (nextKey: Key) -> Result<List<Item>, DataError>,
-    private inline val getNextKey: suspend (key: Key, items: List<Item>) -> Key
+    private val onRequest: suspend (nextKey: Key) -> Result<List<Item>, DataError>,
+    private val getNextKey: suspend (key: Key, items: List<Item>) -> Key
 ) : Paginator<Key, Item> {
 
     private var currentKey = initialKey

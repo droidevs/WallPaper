@@ -1,12 +1,16 @@
 package io.droidevs.wallpaper.ui.commons
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 /**
@@ -24,7 +28,7 @@ fun EmptyListMessage(
     title: String,
     modifier: Modifier = Modifier,
     subtitle: String? = null,
-    icon: ImageVector,
+    icon: ImageVector = Icons.Default.Refresh,
     actionText: String? = null,
     onActionClick: (() -> Unit)? = null
 ) {
@@ -74,5 +78,43 @@ fun EmptyListMessage(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true, name = "Basic Empty State")
+@Composable
+private fun EmptyListMessagePreview() {
+    MaterialTheme {
+        EmptyListMessage(
+            title = "Nothing to see here",
+            subtitle = "When you add items, they will show up here."
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Empty State with Action")
+@Composable
+private fun EmptyListMessageWithActionPreview() {
+    MaterialTheme {
+        EmptyListMessage(
+            title = "Your album is empty",
+            subtitle = "Add your first wallpaper to get started.",
+            actionText = "Add Wallpaper",
+            onActionClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Custom Icon Preview")
+@Composable
+private fun EmptyListMessageCustomIconPreview() {
+    MaterialTheme {
+        EmptyListMessage(
+            title = "Search came up empty",
+            subtitle = "Try searching for a different keyword.",
+            icon = Icons.Outlined.Search, // Using a different icon
+            actionText = "Try Again",
+            onActionClick = {}
+        )
     }
 }

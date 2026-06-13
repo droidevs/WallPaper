@@ -21,10 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import io.droidevs.wallpaper.ui.layouts.AppLayoutMode
+import io.droidevs.wallpaper.ui.window.LayoutMode
+import io.droidevs.wallpaper.ui.window.LocalWindow
 import io.droidevs.wallpaper.ui.model.NavigationItem
-import io.droidevs.wallpaper.ui.system.System
-import io.droidevs.wallpaper.ui.system.window
 
 @Composable
 fun AppNavRail(
@@ -33,11 +32,11 @@ fun AppNavRail(
     selectedItem: Int,
     onClick: (NavigationItem) -> Unit
 ) {
-    val appLayoutInfo = System.window.state.value.layout
+    val layoutMode = LocalWindow.current.layoutMode
 
     val railWidth by remember {
         derivedStateOf {
-            if (appLayoutInfo.appLayoutMode == AppLayoutMode.DOUBLE_BIG)
+            if (layoutMode == LayoutMode.DOUBLE_BIG)
                 120.dp
             else
                 80.dp

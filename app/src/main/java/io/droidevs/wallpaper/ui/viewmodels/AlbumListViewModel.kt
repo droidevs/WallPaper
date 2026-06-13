@@ -67,12 +67,6 @@ class AlbumListViewModel(
             // Adjust if your use case is different (e.g., uses a limit/offset)
             albumUseCases.getPage(page = nextPage, pageSize = 10).first()
         },
-        getNextKey = { key, items ->
-            // Assuming AlbumEntity has an 'id' or some way to determine the next page
-            // Or if your API returns page info, use that.
-            // For simple sequential pages:
-            key + 1
-        },
         onError = { error ->
             _state.update { it.copy(error = error as Error?) }
             // Optionally emit an event to show a toast or dialog

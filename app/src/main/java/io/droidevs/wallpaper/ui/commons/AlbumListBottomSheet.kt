@@ -175,7 +175,7 @@ fun AlbumItem(album: Album, isSelected: Boolean, onAlbumClick: (Album) -> Unit) 
                 fontWeight = FontWeight.Medium
             )
             Text(
-                text = "${album.total} wallpapers • ${album.releaseYear}",
+                text = "${album.total} wallpapers",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

@@ -12,8 +12,8 @@ class GetCollectionByIdUseCase(
     private val repository: CollectionRepository,
     private val dispatchers: AppDispatchers
 ) {
-    operator fun invoke(id: Int): Flow<Result<Collection?, DataError>> {
-        return repository.getCollectionById(id).flowOn(
+    operator fun invoke(id: Long): Flow<Result<Collection?, DataError>> {
+        return repository.getCollectionById(id.toInt()).flowOn(
             dispatchers.io
         )
     }

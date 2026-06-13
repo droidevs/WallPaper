@@ -126,6 +126,7 @@ fun <T, R, E : RootError> Flow<Result<T, E>>.mapResult(
     transform: (T) -> R
 ): Flow<Result<R, E>> = map { result -> result.map(transform) }
 
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 fun <T, E : RootError, R> Flow<Result<T, E>>.flatMapResult(
     transform: (T) -> Flow<Result<R, E>>
 ): Flow<Result<R, E>> = flatMapConcat { result ->

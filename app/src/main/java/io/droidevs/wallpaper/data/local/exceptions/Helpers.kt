@@ -45,6 +45,7 @@ fun <D> Flow<D>.asDatabaseResultFlow(): Flow<Result<D, DatabaseError>> = asResul
 /**
  * For flows that already emit Result types (just transforms errors)
  */
+@JvmName("asDatabaseResultFlowResult")
 fun <D> Flow<Result<D, DatabaseError>>.asDatabaseResultFlow(): Flow<Result<D, DatabaseError>> = asResultFlow(
     errorTransform = { e -> e.toDatabaseError() }
 )

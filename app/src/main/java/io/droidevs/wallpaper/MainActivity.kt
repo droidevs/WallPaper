@@ -32,7 +32,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker
 import dagger.hilt.android.AndroidEntryPoint
-import io.droidevs.bmicalc.ui.utils.ObserveAsEventsCompose
+import io.droidevs.wallpaper.ui.utils.ObserveAsEventsCompose
 import io.droidevs.wallpaper.ui.snackbar.SnackBarController
 import io.droidevs.wallpaper.ui.theme.WallPaperTheme
 import io.droidevs.wallpaper.ui.window.LocalWindow
@@ -47,7 +47,6 @@ class MainActivity : ComponentActivity() {
 
     private var windowInfoFlow = mutableStateOf(WindowInfo())
 
-    val windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
     var windowInfoTracker : WindowInfoTracker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

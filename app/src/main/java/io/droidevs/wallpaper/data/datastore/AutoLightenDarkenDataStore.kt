@@ -3,27 +3,30 @@ package io.droidevs.wallpaper.data.datastore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
+import io.droidevs.wallpaper.data.datastore.delegate.PreferenceDelegate
+import io.droidevs.wallpaper.domain.preferences.AutoLightenDarkenPreference
+import io.droidevs.wallpaper.domain.result.Result
+import io.droidevs.wallpaper.domain.result.errors.PreferenceError
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class AutoLightenDarkenDataStore(
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
 ) : AutoLightenDarkenPreference {
 
-    companion object {
-        private val ENABLED_KEY = booleanPreferencesKey("auto_lighten_darken_pref")
+    private val delegate by lazy {
+        PreferenceDelegate(
+            dataStore,
+            booleanPreferencesKey("auto_lighten_darken_pref"),
+            false
+        )
     }
 
-    override fun isEnabled(): Flow<Boolean> {
-        return dataStore.data.map { preferences ->
-            preferences[ENABLED_KEY] ?: false // Default value is false if not set
+    override val isEnabled: Flow<Result<Boolean, PreferenceError>>
+        get() {
+            return delegate.flow
         }
-    }
 
-    override suspend fun setEnabled(enabled: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[ENABLED_KEY] = enabled
-        }
+    override suspend fun setEnabled(enabled: Boolean): Result<Boolean, PreferenceError> {
+        return delegate.set(enabled)
     }
 }

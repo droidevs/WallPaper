@@ -19,16 +19,15 @@ import io.droidevs.wallpaper.data.model.SearchHistoryEntity
         AlbumEntity::class,
         SearchHistoryEntity::class,
         FavoriteEntity::class,
-        //LocalWallpaperEntity::class
+        LocalWallpaperEntity::class
     ], version = 1)
 
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun albumDao(): AlbumDao
-
     abstract fun searchHistoryDao(): SearchHistoryDao
-
     abstract fun favoritesDao(): FavoritesDao
+    abstract fun wallpaperDao(): LocalWallpaperDao
 
     companion object {
         private const val DATABASE_NAME = "wallpapers"
@@ -39,12 +38,12 @@ abstract class AppDatabase : RoomDatabase() {
             kotlin.runCatching {
                 if (!instance!!.isOpen) {
                     instance = Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
-                        .fallbackToDestructiveMigration()
+                        .fallbackToDestructiveMigration(dropAllTables = false)
                         .build()
                 }
             }.getOrElse {
                 instance = Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
-                    .fallbackToDestructiveMigration()
+                    .fallbackToDestructiveMigration(dropAllTables = false)
                     .build()
             }
 

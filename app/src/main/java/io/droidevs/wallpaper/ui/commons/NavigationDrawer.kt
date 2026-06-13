@@ -29,7 +29,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,7 +37,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -63,9 +62,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
-import io.droidevs.wallpaper.coil.profile.ProfileImageRequest
-import io.droidevs.wallpaper.domain.Profile
 import io.droidevs.wallpaper.ui.model.MenuItem
+import io.droidevs.wallpaper.ui.commons.progress.AnimatedCircularProgress
 
 import kotlinx.coroutines.launch
 
@@ -119,7 +117,7 @@ fun NavigationDrawer(
                     )
 
                     // Divider with a glow effect
-                    Divider(
+                    HorizontalDivider(
                         color = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f),
                         modifier = Modifier.padding(vertical = 8.dp)
                     )
@@ -144,12 +142,11 @@ fun NavigationDrawer(
 
 @Composable
 fun ProfileHeader(
-    profile: Profile,
     modifier: Modifier = Modifier,
 ){
 
     val painter = rememberAsyncImagePainter(
-        model = ProfileImageRequest.newImageRequest(LocalContext.current,profile)
+        model = "https://ui-avatars.com/api/?name=Guest+User"
     )
     val painterState = remember { mutableStateOf(AsyncImagePainter.State.Empty) }
 
@@ -190,9 +187,8 @@ fun ProfileHeader(
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        TODO("change style")
         Text(
-            text = profile.fullName
+            text = "Guest User"
         )
 
     }
@@ -248,9 +244,7 @@ fun DrawerHeader(
                 .padding(4.dp)
                 .align(Alignment.CenterHorizontally)
         ) {
-            ProfileHeader(
-                profile = TODO()
-            )
+            ProfileHeader()
         }
 
         Spacer(modifier = Modifier.height(16.dp))

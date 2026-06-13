@@ -92,12 +92,7 @@ class SearchViewModel(
                 ).first()
             }
         },
-        getNextKey = { key, items ->
-            // Assuming AlbumEntity has an 'id' or some way to determine the next page
-            // Or if your API returns page info, use that.
-            // For simple sequential pages:
-            key + 1
-        },
+
         onError = { error ->
             _state.update { it.copy(error = error as Error?) }
             // Optionally emit an event to show a toast or dialog

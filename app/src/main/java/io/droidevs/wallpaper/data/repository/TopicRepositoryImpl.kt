@@ -85,9 +85,9 @@ class TopicRepositoryImpl @Inject constructor(
     }
 
 
-    override fun getTopicsPaged(page: Int, pageSize: Int): Flow<Result<List<Topic>, DataError>> =
+    override fun getTopicsPaged(page: Int, limit: Int): Flow<Result<List<Topic>, DataError>> =
         flowRunCatchingDatabase {
-            topicDao.getTopics(page, pageSize)
+            topicDao.getTopics(page, limit)
                 .map { topics->
                     topics.map {
                         it.toDomain()

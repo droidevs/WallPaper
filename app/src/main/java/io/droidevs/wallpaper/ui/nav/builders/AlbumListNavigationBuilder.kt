@@ -6,8 +6,8 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import io.droidevs.bmicalc.ui.layouts.SomethingWrongLayout
-import io.droidevs.bmicalc.ui.utils.ObserveAsEvents
+import io.droidevs.wallpaper.ui.layouts.SomethingWrongLayout
+import io.droidevs.wallpaper.ui.utils.ObserveAsEvents
 import io.droidevs.wallpaper.R
 import io.droidevs.wallpaper.ui.nav.navigators.Navigator
 import io.droidevs.wallpaper.ui.nav.roots.Screen.*

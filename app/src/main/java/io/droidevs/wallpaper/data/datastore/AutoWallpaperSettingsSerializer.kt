@@ -3,7 +3,7 @@ package io.droidevs.wallpaper.data.datastore
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
-import io.droidevs.wallpaper.models.AutoWallpaperSettings
+import io.droidevs.wallpaper.domain.model.AutoWallpaperSettings
 import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream

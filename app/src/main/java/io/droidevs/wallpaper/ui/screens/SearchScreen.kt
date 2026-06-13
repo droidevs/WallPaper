@@ -30,7 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -258,7 +258,7 @@ private fun SearchHistorySection(
                     }
                     .padding(vertical = 12.dp)
             )
-            Divider(modifier = Modifier.padding(start = 8.dp))
+            HorizontalDivider(modifier = Modifier.padding(start = 8.dp))
         }
     }
 }
@@ -269,9 +269,6 @@ fun SearchBarAction.toSearchScreenAction(): SearchScreenAction {
         is SearchBarAction.Search -> SearchScreenAction.Search
         is SearchBarAction.Clear -> SearchScreenAction.ClearSearch
         is SearchBarAction.Back -> SearchScreenAction.OnBackPressed
-        else -> {
-            throw IllegalArgumentException("Unknown SearchBarAction: $this")
-        }
     } as SearchScreenAction
 }
 

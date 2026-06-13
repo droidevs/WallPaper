@@ -1,6 +1,13 @@
 package io.droidevs.wallpaper.ui.commons
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -26,7 +33,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,16 +47,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import io.droidevs.wallpaper.ui.model.albums.AlbumUi
@@ -58,6 +61,7 @@ import io.droidevs.wallpaper.ui.model.albums.AlbumUi
 
 @Composable
 fun WallpaperAlbumCard(
+    isSelectMode: Boolean,
     album: AlbumUi,
     onActionSelected: (WallpaperAlbumAction) -> Unit,
     modifier: Modifier = Modifier
@@ -66,9 +70,14 @@ fun WallpaperAlbumCard(
     val pressed by interactionSource.collectIsPressedAsState()
 
     val isHovered by interactionSource.collectIsHoveredAsState()
-    val elevation = animateDpAsState(
+    val elevation by animateDpAsState(
         if (isHovered) 8.dp else 4.dp,
         label = "cardElevation"
+    )
+
+    val borderColor by animateColorAsState(
+        targetValue = if (album.isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+        label = "borderColor"
     )
 
     // The list of actions to show in the menu
@@ -79,9 +88,6 @@ fun WallpaperAlbumCard(
         WallpaperAlbumAction.DeleteAction
     )
 
-    var isContextMenuVisible by rememberSaveable {
-        mutableStateOf(false)
-    }
 
     var itemHeight by remember { mutableStateOf(0.dp) }
 
@@ -108,35 +114,71 @@ fun WallpaperAlbumCard(
             .alpha(if (pressed) 0.9f else 1f),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = elevation.value,
+            defaultElevation = elevation,
             pressedElevation = 2.dp
         ),
+        // --- SELECTION BORDER ---
+        border = BorderStroke(2.dp, borderColor)
     ) {
         Box(
             modifier = Modifier.fillMaxWidth()
                 .indication(interactionSource, indication = LocalIndication.current)
                 .pointerInput(true){
                     detectTapGestures(
+                        onTap = {
+                            val action = if (isSelectMode) {
+                                if (album.isSelected)
+                                     WallpaperAlbumAction.DeselectAction
+                                else
+                                    WallpaperAlbumAction.SelectAction
+                            } else {
+                                WallpaperAlbumAction.OpenAction
+                            }
+                            onActionSelected(action)
+                        },
                         onPress = {
                             var press = PressInteraction.Press(it)
                             interactionSource.emit(press)
                             tryAwaitRelease()
                             interactionSource.emit(PressInteraction.Release(press))
+                        },
+                        onLongPress = {
+                            if (!isSelectMode)
+                                onActionSelected(WallpaperAlbumAction.SelectAction)
                         }
                     )
                 }.padding(12.dp)
         ) {
             // Main content
             Column {
-                // Image Preview
-                AsyncImage(
-                    model = album.coverImageUrl,
-                    contentDescription = "Album preview",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(16f / 9f)
-                )
+
+                Box {
+                    // Image Preview
+                    AsyncImage(
+                        model = album.coverImageUrl,
+                        contentDescription = "Album preview",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(16f / 9f)
+                            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    )
+
+                    // --- ANIMATED CHECKBOX ---
+                    if (isSelectMode) {
+                        Box(modifier = Modifier.align(Alignment.TopEnd)) {
+                            SelectCheckboxWithBackground(
+                                isSelected = album.isSelected,
+                                onToggle = {
+                                    if (album.isSelected)
+                                        onActionSelected(WallpaperAlbumAction.DeselectAction)
+                                    else
+                                        onActionSelected(WallpaperAlbumAction.SelectAction)
+                                }
+                            )
+                        }
+                    }
+                }
 
                 Row {
                     // Details Section
@@ -158,16 +200,20 @@ fun WallpaperAlbumCard(
                         Text(
                             text = "${album.total} wallpapers",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant//color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                         )
                     }
 
                     Box {
+                        var isContextMenuVisible by rememberSaveable {
+                            mutableStateOf(false)
+                        }
                         IconButton(
                             modifier = Modifier.align(Alignment.TopEnd),
                             onClick = {
                                 isContextMenuVisible = true
-                            }
+                            },
+                            enabled = !isSelectMode
                         ) {
                             Icon(
                                 imageVector = Icons.Default.MoreVert,
@@ -214,5 +260,7 @@ sealed class WallpaperAlbumAction {
 
     data object DeleteAction : WallpaperAlbumAction()
 
+
+    data object DeselectAction : WallpaperAlbumAction()
 
 }
